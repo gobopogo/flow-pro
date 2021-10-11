@@ -13,16 +13,21 @@
 3. 流程分支条件来源于主表记录的所有字段值 **完成**
 4. 业务表单可在线配置生成 **完成**
 
+流程配置
 ![](jeecg-boot/img/img.png)
 ![](jeecg-boot/img/img_3.png)
+节点配置
 ![](jeecg-boot/img/img_5.png)
+表单对接
 ![](jeecg-boot/img/img_2.png)
+流程办理
 ![](jeecg-boot/img/img_8.png)
 ![](jeecg-boot/img/img_7.png)
 ![](jeecg-boot/img/img_9.png)
 ![](jeecg-boot/img/img_10.png)
 ![](jeecg-boot/img/img_11.png)
 ![](jeecg-boot/img/img_1.png)
+表单配置
 ![](jeecg-boot/img/img_4.png)
 ![](jeecg-boot/img/img_6.png)
 ![](jeecg-boot/img/img_12.png)
