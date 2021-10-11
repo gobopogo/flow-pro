@@ -6,11 +6,10 @@
 4.业务表单可拖拽生成
 5.业务流程集成页面
 
-![img_1.png](img_1.png)
-![img_2.png](img_2.png)
-![img_6.png](img_6.png)
-![img_4.png](img_4.png)
-
+![](jeecg-boot/img/img_1.png)
+![](jeecg-boot/img/img_2.png)
+![](jeecg-boot/img/img_6.png)
+![](jeecg-boot/img/img_4.png)
 复杂业务流程
 
 1.流程的所有节点，可以定制显示不同业务表单，流程本身也可以选择表单作为基础表单
