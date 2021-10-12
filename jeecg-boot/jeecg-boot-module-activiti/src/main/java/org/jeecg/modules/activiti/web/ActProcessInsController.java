@@ -153,7 +153,7 @@ public class ActProcessInsController {
         if (StrUtil.isBlank(reason)) {
             reason = "";
         }
-        for (String id : ids.split(",")) {
+        for (String id : ids.split(SPLIT_FLAG)) {
             // 关联业务状态结束
             ProcessInstance pi = runtimeService.createProcessInstanceQuery().processInstanceId(id).singleResult();
             ActBusiness actBusiness = actBusinessService.getById(pi.getBusinessKey());
@@ -238,8 +238,8 @@ public class ActProcessInsController {
                     e.setResult(ActivitiConstant.RESULT_PASS);
                 } else if (reason.contains(ActivitiConstant.CANCEL_PRE)) {
                     e.setResult(ActivitiConstant.RESULT_CANCEL);
-                    if (reason.length() > 9) {
-                        e.setDeleteReason(reason.substring(9));
+                    if (reason.length() > ActivitiConstant.CANCEL_PRE.length()) {
+                        e.setDeleteReason(reason.substring(ActivitiConstant.CANCEL_PRE.length()));
                     } else {
                         e.setDeleteReason("");
                     }
@@ -248,8 +248,8 @@ public class ActProcessInsController {
                     e.setDeleteReason("");
                 } else if (reason.contains(ActivitiConstant.DELETE_PRE)) {
                     e.setResult(ActivitiConstant.RESULT_DELETED);
-                    if (reason.length() > 8) {
-                        e.setDeleteReason(reason.substring(8));
+                    if (reason.length() > ActivitiConstant.DELETE_PRE.length()) {
+                        e.setDeleteReason(reason.substring(ActivitiConstant.DELETE_PRE.length()));
                     } else {
                         e.setDeleteReason("");
                     }
