@@ -55,7 +55,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/activiti/models")
 @Slf4j
-@Api(tags = "工作流-模型设计", description = "流程模型Model操作相关")
+@Api(tags = "工作流-模型设计", value = "流程模型Model操作相关")
 public class ActivitiModelController {
     private final RepositoryService repositoryService;
     private final HistoryService historyService;
@@ -84,6 +84,13 @@ public class ActivitiModelController {
 
     public static final String NC_NAME = "NCName";
     public static final String PRIMARY = "PRIMARY";
+
+    public static final String BPMN_SUFFIX = ".bpmn";
+    public static final String BPMN_XML_SUFFIX = ".bpmn20.xml";
+    public static final String JSON_SUFFIX = ".json";
+    public static final String FILE_TYPE_JSON = "json";
+    public static final String FILE_TYPE_BPMN = "bpmn";
+    public static final int READ_LENGTH= 1024;
 
     /**
      * 获取模型列表
@@ -175,7 +182,7 @@ public class ActivitiModelController {
         if (fileName == null) {
             return Result.error("文件名不能为空");
         }
-        if (!(fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn"))) {
+        if (!(fileName.endsWith(BPMN_XML_SUFFIX) || fileName.endsWith(BPMN_SUFFIX))) {
             return Result.error("文件类型错误");
         }
         try {
@@ -274,7 +281,7 @@ public class ActivitiModelController {
             byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(model);
 
             // 部署发布模型流程
-            String processName = modelData.getName() + ".bpmn20.xml";
+            String processName = modelData.getName() + BPMN_XML_SUFFIX;
             Deployment deployment = repositoryService.createDeployment()
                     .name(modelData.getName())
                     .addString(processName, new String(bpmnBytes, StandardCharsets.UTF_8))
@@ -344,13 +351,13 @@ public class ActivitiModelController {
             String filename = "";
             byte[] exportBytes = null;
             String mainProcessId = bpmnModel.getMainProcess().getId();
-            if (type.equals("bpmn")) {
+            if (type.equals(FILE_TYPE_BPMN)) {
                 BpmnXMLConverter xmlConverter = new BpmnXMLConverter();
                 exportBytes = xmlConverter.convertToXML(bpmnModel);
-                filename = mainProcessId + ".bpmn20.xml";
-            }else if (type.equals("json")) {
+                filename = mainProcessId + BPMN_XML_SUFFIX;
+            } else if (type.equals(FILE_TYPE_JSON)) {
                 exportBytes = modelEditorSource;
-                filename = mainProcessId + ".json";
+                filename = mainProcessId + JSON_SUFFIX;
             }
 
             // 处理异常
@@ -362,7 +369,7 @@ public class ActivitiModelController {
             }
 
             ByteArrayInputStream in = new ByteArrayInputStream(exportBytes);
-            response.setHeader("Content-Disposition", "attachment; filename=" +new String(filename.getBytes("gb2312"), "ISO8859-1"));
+            response.setHeader("Content-Disposition", "attachment; filename=" + new String(filename.getBytes("gb2312"), "ISO8859-1"));
             IOUtils.copy(in, response.getOutputStream());
             response.flushBuffer();
         } catch (Exception e) {
@@ -389,8 +396,7 @@ public class ActivitiModelController {
         InputStream inputStream = processDiagramGenerator.generatePngDiagram(model);
 
         String filename = model.getMainProcess().getId() + ".png";
-//        response.setHeader("Content-Disposition", "attachment; filename=" +new String(filename.getBytes("gb2312"), "ISO8859-1"));
-        response.setHeader("Content-Disposition", "inline; filename=" +new String(filename.getBytes("gb2312"), "ISO8859-1"));
+        response.setHeader("Content-Disposition", "inline; filename=" + new String(filename.getBytes("gb2312"), "ISO8859-1"));
 
         OutputStream out = response.getOutputStream();
         for (int b; (b = inputStream.read()) != -1; ) {
@@ -415,14 +421,7 @@ public class ActivitiModelController {
         InputStream inputStream = repositoryService.getResourceAsStream(pd.getDeploymentId(), resourceName);
 
         try {
-            response.setContentType("application/octet-stream;charset=UTF-8");
-            response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(resourceName, "UTF-8"));
-            byte[] b = new byte[1024];
-            int len;
-            while ((len = inputStream.read(b, 0, 1024)) != -1) {
-                response.getOutputStream().write(b, 0, len);
-            }
-            response.flushBuffer();
+            contentOutput(response, resourceName, inputStream);
         } catch (IOException e) {
             log.error(e.toString());
         }
@@ -467,17 +466,27 @@ public class ActivitiModelController {
             picName = pi.getName() + ".png";
         }
         try {
-            response.setContentType("application/octet-stream;charset=UTF-8");
-            response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(picName, "UTF-8"));
-            byte[] b = new byte[1024];
-            int len;
-            while ((len = inputStream.read(b, 0, 1024)) != -1) {
-                response.getOutputStream().write(b, 0, len);
-            }
-            response.flushBuffer();
+            contentOutput(response, picName, inputStream);
         } catch (IOException e) {
             log.error(e.toString());
             throw new JeecgBootException("读取流程图片失败");
         }
+    }
+
+    /**
+     * @param response     http 响应对象
+     * @param resourceName 资源名称
+     * @param inputStream  输入流
+     * @throws IOException io异常
+     */
+    private void contentOutput(HttpServletResponse response, String resourceName, InputStream inputStream) throws IOException {
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(resourceName, "UTF-8"));
+        byte[] b = new byte[1024];
+        int len;
+        while ((len = inputStream.read(b, 0, READ_LENGTH)) != -1) {
+            response.getOutputStream().write(b, 0, len);
+        }
+        response.flushBuffer();
     }
 }

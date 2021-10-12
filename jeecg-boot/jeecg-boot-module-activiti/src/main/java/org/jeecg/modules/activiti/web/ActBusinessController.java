@@ -189,7 +189,7 @@ public class ActBusinessController {
         actBusinessService.updateById(actBusiness);
         //修改业务表的流程字段
         actBusinessService.updateBusinessStatus(actBusiness.getTableName(), actBusiness.getTableId(), "撤回");
-        return Result.ok("操作成功");
+        return Result.OK("操作成功");
     }
 
     @AutoLog(value = "流程-我申请的流程列表")
