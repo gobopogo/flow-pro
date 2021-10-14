@@ -401,4 +401,15 @@ public class ActBusinessServiceImpl extends ServiceImpl<ActBusinessMapper, ActBu
         });
         return list;
     }
+
+    public ActBusiness getActBusinessByTableInfo(String tableName, String tableId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("table_name", tableName);
+        map.put("table_id", tableId);
+        return baseMapper.selectByMap(map).stream().findFirst().orElse(null);
+    }
+
+    public void deleteBusinessSub(String subTableName, String fkId,String tableId) {
+        this.baseMapper.deleteBusiSubData(tableId, subTableName, fkId);
+    }
 }

@@ -29,7 +29,7 @@ public class ActivitiFormComponentController {
     @Autowired
     private ActFormComponentServiceImpl actFormComponentService;
 
-    @RequestMapping("/query")
+    @RequestMapping(value = "/query", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value = "表单组件查询", notes = "表单组件查询")
     public Result<List<ActFormComponent>> query(HttpServletRequest request) {
@@ -39,7 +39,7 @@ public class ActivitiFormComponentController {
         return Result.OK(models);
     }
 
-    @RequestMapping("/list")
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value = "表单组件列表", notes = "表单组件列表")
     public Result<List<ActFormComponent>> list() {

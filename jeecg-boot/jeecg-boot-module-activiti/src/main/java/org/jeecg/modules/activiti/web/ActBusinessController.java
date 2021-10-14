@@ -12,6 +12,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
@@ -139,6 +140,14 @@ public class ActBusinessController {
             }
             // 删除关联业务表
             actBusinessService.deleteBusiness(actBusiness.getTableName(), actBusiness.getTableId());
+            // 删除关联业务子表
+            ActZprocess actZprocess = actZprocessService.getActZprocessByTableName(actBusiness.getTableName());
+            if (StringUtils.equals("3", actZprocess.getTableType()) && StringUtils.isNotBlank(actZprocess.getOtherInfo())) {
+                for (String subTableAndFk : StringUtils.split(actZprocess.getOtherInfo(), ",")) {
+                    String[] s = StringUtils.split(subTableAndFk, ":");
+                    actBusinessService.deleteBusinessSub(s[0], s[1], actBusiness.getTableId());
+                }
+            }
             actBusinessService.removeById(id);
         }
         return Result.OK("删除成功",null);
@@ -258,5 +267,12 @@ public class ActBusinessController {
         }
 
         return Result.OK(list);
+    }
+
+    @AutoLog(value = "流程-获取指定业务表信息")
+    @ApiOperation(value = "流程-获取指定业务表信息", notes = "获取指定业务表信息")
+    @RequestMapping(value = "/getActBusinessByTableInfo", method = RequestMethod.GET)
+    public Result<ActBusiness> getActBusinessByTableInfo(@RequestParam(value = "tableName",defaultValue = "") String tableName, @RequestParam(value = "tableId",defaultValue = "") String tableId) {
+        return Result.OK(actBusinessService.getActBusinessByTableInfo(tableName, tableId));
     }
 }

@@ -157,7 +157,7 @@
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="关联表单" >
           <a-select @change="change_routeName" placeholder="请选择关联表单" :trigger-change="true" v-decorator="[ 'routeName', {initialValue:editObj.routeName, rules: [{ required: true, message: '不能为空' }] },]">
             <a-select-option value="">请选择</a-select-option>
-            <a-select-option v-for="(item, i) in allFormComponent" :key="item.routeName" :value="item.routeName">
+            <a-select-option v-for="(item, i) in allComponent" :key="item.routeName" :value="item.routeName">
               <span style="display: inline-block;width: 100%" :title=" item.text">
                 {{ item.text}}
               </span>
@@ -567,6 +567,8 @@
           console.log("routeName",routeName)
           var route = this.getFormComponent(routeName);
           this.editObj.businessTable = route.businessTable;
+          this.editObj.tableType = route.tableType;
+          this.editObj.otherInfo = route.otherInfo;
           this.editObj.routeName = route.routeName;
           console.log("this.editObj",this.editObj)
         })
@@ -581,7 +583,8 @@
         }
         let formComponent = this.getFormComponent(routeName);
         console.log(formComponent)
-        this.lcModa.formComponent = formComponent.component;
+        // this.lcModa.formComponent = formComponent.component;
+        this.lcModa.formComponent = () => import(`@/${formComponent.component}`);
         this.lcModa.title = '流程表单预览：'+formComponent.text;
         this.lcModa.visible = true;
       },
