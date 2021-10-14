@@ -30,6 +30,9 @@ public interface ActBusinessMapper extends BaseMapper<ActBusiness> {
     @Delete("delete from ${tableName} where id = #{tableId}")
     int deleteBusiData(@Param("tableId") String tableId, @Param("tableName") String tableName);
 
+    @Delete("delete from ${subTableName} where ${fkId} = #{tableId}")
+    int deleteBusiSubData(@Param("tableId") String tableId, @Param("subTableName") String subTableName, @Param("fkId") String fkId);
+
     @Select("SELECT ahi.USER_ID_ FROM ACT_HI_IDENTITYLINK ahi\n" +
             "      WHERE TYPE_ = #{type} AND TASK_ID_ = #{taskId}\n" +
             "      LIMIT 1")

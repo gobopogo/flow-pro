@@ -1,8 +1,6 @@
 package org.jeecg.modules.activiti.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -135,6 +133,20 @@ public class ActZprocess {
     @Excel(name = "关联业务表名", width = 15)
     @ApiModelProperty(value = "关联业务表名")
     private String businessTable;
+    /**
+     * 关联业务表类型
+     */
+    @Excel(name = "关联业务表类型", width = 15)
+    @ApiModelProperty(value = "关联业务表类型")
+    private String tableType;
+    /**
+     * 关联业务表子表名
+     */
+    @Excel(name = "其他信息", width = 15)
+    @ApiModelProperty(value = "其他信息")
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
+    private String otherInfo;
+
     /**
      * 关联前端表单路由名
      */

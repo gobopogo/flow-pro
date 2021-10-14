@@ -151,7 +151,9 @@
           );
           return;
         }
-        this.lcModa.formComponent = this.getFormComponent(v.routeName).component;
+        // this.lcModa.formComponent = this.getFormComponent(v.routeName).component;
+        this.lcModa.formComponent = () => import(`@/${this.getFormComponent(v.routeName).component}`);
+
         this.lcModa.title = '发起流程：'+v.name;
         this.lcModa.isNew = true;
         this.lcModa.processData = v;

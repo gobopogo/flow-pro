@@ -38,10 +38,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -502,5 +499,11 @@ public class ActZprocessServiceImpl extends ServiceImpl<ActZprocessMapper, ActZp
     @Override
     public List<ActZprocess> queryNewestProcess(String processKey) {
         return baseMapper.selectNewestProcess(processKey);
+    }
+
+    public ActZprocess getActZprocessByTableName(String tableName) {
+        Map<String, Object> map = new HashMap<>(8);
+        map.put("business_table", tableName);
+        return baseMapper.selectByMap(map).stream().findFirst().orElse(null);
     }
 }

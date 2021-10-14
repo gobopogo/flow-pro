@@ -12,33 +12,33 @@ export const activitiMixin = {
     return {
       //token header
       tokenHeader: {'X-Access-Token': Vue.ls.get(ACCESS_TOKEN)},
+      allComponent: [],
+      url: {
+        listFormComponent: "/activiti/formComponent/list"
+      },
     }
   },
   computed:{
-    /*todo 所有的流程表单，组件化注册，在此维护*/
-    allFormComponent:function(){
-      return [
-          {
-            text:'示例表单',
-            routeName:'@/views/activiti/form/demoForm',
-            component:() => import(`@/views/activiti/form/demoForm`),
-            businessTable:'test_demo'
-          },
-          {
-            text:'请假流程',
-            routeName:'@/views/activiti/form/LeaveForm',
-            component:() => import(`@/views/activiti/form/LeaveForm`),
-            businessTable:'act_b_leave'
-          }
-      ]
-    },
     historicDetail:function () {
       return () => import(`@/views/activiti/historicDetail`)
     }
   },
+  created() {
+    this.getAllFormComponent();
+  },
   methods:{
+    getAllFormComponent() {
+      getAction(this.url.listFormComponent).then((res) => {
+        if(res.success){
+          this.allComponent = res.result;
+        }
+      }).catch(()=>{
+        console.log("表单组件加载失败");
+      });
+    },
     getFormComponent(routeName){
-      return _.find(this.allFormComponent,{routeName:routeName})||{};
+      // return _.find(this.allFormComponent,{routeName:routeName})||{};
+      return _.find(this.allComponent,{routeName:routeName})||{};
     },
     millsToTime(mills) {
       if (!mills) {

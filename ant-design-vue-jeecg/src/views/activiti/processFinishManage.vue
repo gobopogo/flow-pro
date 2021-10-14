@@ -239,7 +239,8 @@ export default {
       }
       this.lcModa.disabled = true;
       this.lcModa.title = '查看流程业务信息：'+r.name;
-      this.lcModa.formComponent = this.getFormComponent(r.routeName).component;
+      // this.lcModa.formComponent = this.getFormComponent(r.routeName).component;
+      this.lcModa.formComponent = () => import(`@/${this.getFormComponent(r.routeName).component}`);
       this.lcModa.processData = r;
       this.lcModa.isNew = false;
       this.lcModa.visible = true;
