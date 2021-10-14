@@ -1,13 +1,13 @@
-package org.jeecg.activiti.mapper;
+package org.jeecg.modules.activiti.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.jeecg.activiti.entity.ActFormComponent;
+import org.jeecg.modules.activiti.entity.ActFormComponent;
 
 /**
- * @Description: 流程业务扩展表
- * @Author: pmc
- * @Date:   2020-03-30
- * @Version: V1.0
+ * 流程关联表单组件信息
+ *
+ * @author dongjb
+ * @date 2021/10/13
  */
 public interface ActFormComponentMapper extends BaseMapper<ActFormComponent> {
 }

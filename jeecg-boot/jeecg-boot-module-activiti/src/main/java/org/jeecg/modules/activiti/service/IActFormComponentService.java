@@ -1,11 +1,13 @@
-package org.jeecg.activiti.service;
+package org.jeecg.modules.activiti.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.jeecg.activiti.entity.ActFormComponent;
+import org.jeecg.modules.activiti.entity.ActFormComponent;
 
 /**
- * @author Leo Li
- * @date 2021-04-21 16:20
+ * 流程关联表单组件信息,服务
+ *
+ * @author dongjb
+ * @date 2021/10/13
  */
 public interface IActFormComponentService extends IService<ActFormComponent> {
 

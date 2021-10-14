@@ -1,4 +1,4 @@
-package org.jeecg.activiti.entity;
+package org.jeecg.modules.activiti.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -10,14 +10,16 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
- * @author Leo Li
- * @date 2021-04-21 13:46
+ * 表单组件
+ *
+ * @author dongjb
+ * @date 2021/10/13
  */
 @Data
 @TableName("act_z_form_component")
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="act_z_form_component对象", description="表单组件表")
+@ApiModel(value = "act_z_form_component对象", description = "表单组件表")
 public class ActFormComponent {
     @TableId(type = IdType.ID_WORKER_STR)
     @ApiModelProperty(value = "主键")
