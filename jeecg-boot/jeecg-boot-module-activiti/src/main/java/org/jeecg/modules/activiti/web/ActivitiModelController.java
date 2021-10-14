@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
@@ -99,7 +100,7 @@ public class ActivitiModelController {
      * @return 按条件或者全部模型
      */
     @AutoLog(value = "获取模型列表")
-    @ApiOperation(value = "模型列表", notes = "keyWord不空则匹配模型名称，否则查询全部")
+    @ApiOperation(value = "模型列表", notes = "keyWord不空则匹配模型名称，否则查询全部。查询ACT_RE_MODE")
     @RequestMapping(value = "/modelListData", method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> modelListData(HttpServletRequest request) {
@@ -122,7 +123,7 @@ public class ActivitiModelController {
      * @param response http 响应
      */
     @AutoLog(value = "新建模型")
-    @ApiOperation(value = "新建模型", notes = "新建模型")
+    @ApiOperation(value = "新建模型", notes = "新建模型，插入ACT_RE_MODEL，插入ACT_GE_BYTEARRAY（name=source,deployment=null）")
     @RequestMapping(value = "/create", method = RequestMethod.GET)
     public void newModel(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -171,9 +172,9 @@ public class ActivitiModelController {
     }
 
     @AutoLog(value = "上传一个已有模型")
-    @ApiOperation(value = "上传模型", notes = "上传一个已有模型，bpmn的xml文件")
+    @ApiOperation(value = "上传模型", notes = "上传一个已有模型，bpmn的xml文件.插入ACT_RE_MODEL，插入ACT_GE_BYTEARRAY（name=source,deployment=null）")
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-    public Result<Object> deployUploadedFile(@RequestParam("uploadfile") MultipartFile uploadfile) {
+    public Result<Object> deployUploadedFile(@ApiParam(value = "上传的文件") @RequestParam("uploadfile") MultipartFile uploadfile) {
         InputStreamReader in = null;
         if (uploadfile == null) {
             return Result.error("上传模型不能为空");
@@ -243,10 +244,10 @@ public class ActivitiModelController {
      * @return 是否删除成功
      */
     @AutoLog(value = "删除模型")
-    @ApiOperation(value = "删除模型", notes = "根据模型标识删除模型")
+    @ApiOperation(value = "删除模型", notes = "根据模型标识删除模型, 删除ACT_RE_MODEL，删除ACT_GE_BYTEARRAY（name=source,deployment=null）")
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     public @ResponseBody
-    Result<Object> deleteModel(@PathVariable("id") String id) {
+    Result<Object> deleteModel(@ApiParam(value = "模型id") @PathVariable("id") String id) {
         repositoryService.deleteModel(id);
         return Result.OK("删除成功。");
     }
@@ -258,10 +259,10 @@ public class ActivitiModelController {
      * @return 是否部署成功
      */
     @AutoLog(value = "发布模型")
-    @ApiOperation(value = "发布模型", notes = "发布模型为流程定义")
+    @ApiOperation(value = "发布模型", notes = "发布模型为流程定义,插入ACT_RE_PROCDEF，ACT_RE_DEPLOYMENT，ACT_Z_PROCESS，ACT_GE_BYTEARRAY（deployment 2条）。通过发布id来版本控制")
     @RequestMapping(value = "/deployment/{id}", method = RequestMethod.GET)
     public @ResponseBody
-    Result<Object> deploy(@PathVariable("id") String id) {
+    Result<Object> deploy(@ApiParam(value = "模型id") @PathVariable("id") String id) {
 
         // 获取模型
         Model modelData = repositoryService.getModel(id);
@@ -330,8 +331,8 @@ public class ActivitiModelController {
     @ApiOperation(value = "获取模型文件", notes = "根据标识分别获取流程模型xml文件或者json文件")
     @RequestMapping(value = "/activiti/export/{modelId}/{type}", method = RequestMethod.GET)
     @ResponseBody
-    public void export(@PathVariable("modelId") String modelId,
-                       @PathVariable("type") String type,
+    public void export(@ApiParam(value = "模型id") @PathVariable("modelId") String modelId,
+                       @ApiParam(value = "文件类型 json，bpmn") @PathVariable("type") String type,
                        HttpServletResponse response) throws IOException {
         try {
             Model modelData = repositoryService.getModel(modelId);
@@ -383,7 +384,7 @@ public class ActivitiModelController {
     @AutoLog(value = "获取模型图片")
     @ApiOperation(value = "获取模型图片", notes = "获取模型的图片")
     @RequestMapping(value = "/activiti/exportDiagram", method = RequestMethod.GET)
-    public void showModelPicture(String modelId, HttpServletResponse response) throws Exception {
+    public void showModelPicture(@ApiParam(value = "模型id") String modelId, HttpServletResponse response) throws Exception {
         Model modelData = repositoryService.getModel(modelId);
         ObjectNode modelNode = null;
         try {
@@ -412,7 +413,7 @@ public class ActivitiModelController {
     @AutoLog(value = "获取流程定义图片")
     @ApiOperation(value = "获取流程定义图片", notes = "导出部署流程资源, 用于流程定义中显示图片")
     @RequestMapping(value = "/export", method = RequestMethod.GET)
-    public void exportResource(@RequestParam String id, HttpServletResponse response) {
+    public void exportResource(@ApiParam(value = "流程定义id") @RequestParam String id, HttpServletResponse response) {
 
         ProcessDefinition pd = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionId(id).singleResult();
@@ -436,7 +437,7 @@ public class ActivitiModelController {
     @AutoLog(value = "获取流程高亮图片")
     @ApiOperation(value = "获取流程高亮图片", notes = "获取流程高亮图片")
     @RequestMapping(value = "/getHighlightImg/{id}", method = RequestMethod.GET)
-    public void getHighlightImg(@PathVariable String id, HttpServletResponse response) {
+    public void getHighlightImg(@ApiParam(value = "流程定义id") @PathVariable String id, HttpServletResponse response) {
         InputStream inputStream;
         ProcessInstance pi;
         String picName;

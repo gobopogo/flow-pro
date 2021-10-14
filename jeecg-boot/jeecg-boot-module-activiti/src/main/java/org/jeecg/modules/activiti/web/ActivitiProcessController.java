@@ -76,32 +76,32 @@ public class ActivitiProcessController {
     /**
      * 按条件获取可用流程列表
      *
-     * @param processName 流程名称
-     * @param processKey  流程key
-     * @param isNew       是否最新
-     * @param status      流程状态
-     * @param roles       用户角色
-     * @param request     http请求
+     * @param lcmc    流程名称
+     * @param lckey   流程key
+     * @param zx      是否最新
+     * @param status  流程状态
+     * @param roles   用户角色
+     * @param request http请求
      * @return 流程列表
      */
     @AutoLog(value = "获取流程定义列表")
-    @ApiOperation(value = "获取流程定义列表", notes = "获取流程定义列表，通过act_z_process流程扩展表查询")
+    @ApiOperation(value = "获取流程定义列表", notes = "获取流程定义列表，通过act_z_process流程扩展表查询.此服务提供给'流程定义'和业务列表使用")
     @RequestMapping(value = "/listData", method = RequestMethod.GET)
-    public Result<List<ActZprocess>> listData(@ApiParam(value = "流程名称") String processName,
-                                              @ApiParam(value = "流程key") String processKey,
-                                              @ApiParam(value = "是否最新") Boolean isNew,
+    public Result<List<ActZprocess>> listData(@ApiParam(value = "流程名称") String lcmc,
+                                              @ApiParam(value = "流程key") String lckey,
+                                              @ApiParam(value = "是否最新") Boolean zx,
                                               @ApiParam(value = "流程状态 部署后默认1激活") String status,
                                               @ApiParam(value = "如果此项不为空，则会过滤当前用户的角色权限") Boolean roles,
                                               HttpServletRequest request) {
         LambdaQueryWrapper<ActZprocess> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByAsc(ActZprocess::getSort).orderByDesc(ActZprocess::getVersion);
-        if (StrUtil.isNotBlank(processName)) {
-            wrapper.like(ActZprocess::getName, processName);
+        if (StrUtil.isNotBlank(lcmc)) {
+            wrapper.like(ActZprocess::getName, lcmc);
         }
-        if (StrUtil.isNotBlank(processKey)) {
-            wrapper.like(ActZprocess::getProcessKey, processKey);
+        if (StrUtil.isNotBlank(lckey)) {
+            wrapper.like(ActZprocess::getProcessKey, lckey);
         }
-        if (isNew != null && isNew) {
+        if (zx != null && zx) {
             wrapper.eq(ActZprocess::getLatest, 1);
         }
         if (StrUtil.isNotBlank(status)) {
@@ -144,9 +144,9 @@ public class ActivitiProcessController {
      */
     @AutoLog(value = "激活或挂起流程定义")
     @ApiOperation(value = "激活或挂起流程定义",
-            notes = "更新流程定义表ACT_RE_PROCDEF，挂起字段SUSPENSION_STATE_。同时更新act_z_process的status字段")
+            notes = "更新流程定义表ACT_RE_PROCDEF，挂起字段SUSPENSION_STATE_（激活 1，挂起 2）。同时更新act_z_process的status （激活 1，挂起-0）")
     @RequestMapping(value = "/updateStatus", method = RequestMethod.POST)
-    public Result<String> updateStatus(String id, Integer status) {
+    public Result<String> updateStatus(@ApiParam(value = "流程定义id") String id, @ApiParam(value = "流程状态，激活 1，挂起-0）") Integer status) {
 
         ActZprocess actProcess = actZprocessService.getById(id);
         if (status == 1) {
@@ -174,18 +174,18 @@ public class ActivitiProcessController {
      */
     @AutoLog(value = "删除流程定义")
     @ApiOperation(value = "删除流程定义", notes = "通过流程定义标识删除流程定义。已经存在流程实例不能删除," +
-            "删除act_z_process的同时，级联删除act_z_node, ACT_RE_DEPLOYMENT" +
+            "删除act_z_process的同时，级联删除act_z_node（如果act_z_process.Version =1 最后版本）, ACT_RE_DEPLOYMENT，ACT_RE_PROCDEF" +
             "然后设置act_z_process 中最大版本记录为最新的记录")
     @RequestMapping(value = "/delByIds", method = RequestMethod.POST)
-    public Result<String> delByIds(@RequestParam("ids") String proDefids) {
+    public Result<String> delByIds(@ApiParam(value = "流程定义id") @RequestParam("ids") String proDefids) {
         for (String proDefid : proDefids.split(SPLIT_FLAG)) {
             if (CollectionUtil.isNotEmpty(actBusinessService.findByProcDefId(proDefid))) {
-                return Result.error("包含已发起申请的流程，无法删除",null);
+                return Result.error("包含已发起申请的流程，无法删除", null);
             }
             ActZprocess actProcess = actZprocessService.getById(proDefid);
             // 当删除最后一个版本时 删除关联数据
             if (actProcess == null) {
-                return Result.error("该数据已删除！",null);
+                return Result.error("该数据已删除！", null);
             }
             if (actProcess.getVersion() == 1) {
                 deleteNodeUsers(proDefid);
@@ -199,6 +199,11 @@ public class ActivitiProcessController {
         return Result.OK("删除成功");
     }
 
+    /**
+     * 清除流程节点配置act_z_node
+     *
+     * @param proDefid 流程定义id
+     */
     public void deleteNodeUsers(String proDefid) {
 
         BpmnModel bpmnModel = repositoryService.getBpmnModel(proDefid);
@@ -220,7 +225,7 @@ public class ActivitiProcessController {
     @AutoLog(value = "流程定义转化为模型")
     @ApiOperation(value = "流程定义转化为模型", notes = "流程定义转化为模型")
     @RequestMapping(value = "/convertToModel", method = RequestMethod.POST)
-    public Result<String> convertToModel(String id) {
+    public Result<String> convertToModel(@ApiParam(value = "流程定义id") String id) {
 
         ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
         InputStream bpmnStream = repositoryService.getResourceAsStream(pd.getDeploymentId(), pd.getResourceName());
@@ -256,13 +261,14 @@ public class ActivitiProcessController {
 
     /**
      * 更新流程定义信息
+     *
      * @param actProcess 流程定义业务扩展对象
      * @return 是否修改成功
      */
     @AutoLog(value = "更新流程定义信息")
     @ApiOperation(value = "更新流程定义信息", notes = "更新流程定义信息，同时更新部署表和流程定义表的类别")
     @RequestMapping(value = "/updateInfo", method = RequestMethod.POST)
-    public Result<String> updateInfo(ActZprocess actProcess) {
+    public Result<String> updateInfo(@ApiParam(value = "流程定义对象") ActZprocess actProcess) {
 
         ProcessDefinition pd = repositoryService.getProcessDefinition(actProcess.getId());
         if (pd == null) {
@@ -285,7 +291,7 @@ public class ActivitiProcessController {
     @AutoLog(value = "获取流程定义的全部节点")
     @ApiOperation(value = "获取全部节点", notes = "通过流程定义id获取流程节点,并从相应的节点中取出指派对象及变量")
     @RequestMapping(value = "/getProcessNode", method = RequestMethod.POST)
-    public Result<List<ProcessNodeVo>> getProcessNode(String id) {
+    public Result<List<ProcessNodeVo>> getProcessNode(@ApiParam(value = "流程定义id") String id) {
 
         BpmnModel bpmnModel = repositoryService.getBpmnModel(id);
 
