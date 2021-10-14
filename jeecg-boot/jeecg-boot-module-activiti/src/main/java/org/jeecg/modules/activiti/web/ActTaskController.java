@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/actTask")
 @Transactional(rollbackFor = Exception.class)
-@Api(tags = "工作流-流程办理")
+@Api(tags = "工作流-流程办理,我的已办")
 public class ActTaskController {
 
     private final TaskService taskService;

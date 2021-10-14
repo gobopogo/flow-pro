@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/actProcessIns")
 @Transactional(rollbackFor = Exception.class)
-@Api(tags = "工作流-流程实例")
+@Api(tags = "工作流-进行中流程,已结束流程,我的申请(第一节点)")
 public class ActProcessInsController {
 
     private final ActZprocessServiceImpl actZprocessService;
