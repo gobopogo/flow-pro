@@ -261,6 +261,7 @@ logging:
   level:
     org:
       jeecg.modules.system.mapper : debug
+      jeecg.modules.activiti.mapper : debug
 #      activiti.engine.impl.persistence.entity: debug
 #swagger
 knife4j:

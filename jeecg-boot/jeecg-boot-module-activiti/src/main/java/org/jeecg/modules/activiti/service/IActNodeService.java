@@ -1,7 +1,7 @@
 package org.jeecg.modules.activiti.service;
 
-import org.jeecg.modules.activiti.entity.ActNode;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.jeecg.modules.activiti.entity.ActNode;
 
 /**
  * 流程节点扩展表
