@@ -123,19 +123,32 @@
 
     <!-- 操作按钮区域 -->
     <div class="table-operator">
-      <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('${tableVo.ftlDescription}')">导出</a-button>
+      <a-button <#if bpm_flag> :disabled="disabled" </#if> @click="handleAdd" type="primary" icon="plus">新增</a-button>
+      <a-button <#if bpm_flag> :disabled="disabled" </#if> type="primary" icon="download" @click="handleExportXls('${tableVo.ftlDescription}')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
-        <a-button type="primary" icon="import">导入</a-button>
+        <a-button <#if bpm_flag> :disabled="disabled" </#if> type="primary" icon="import">导入</a-button>
       </a-upload>
       <!-- 高级查询区域 -->
+      <#if !bpm_flag>
       <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
+      </#if>
+      <#if bpm_flag>
+      <a-dropdown <#if bpm_flag> :disabled="disabled" </#if> v-if="selectedRowKeys.length > 0">
+        <a-menu slot="overlay">
+          <a-menu-item key="1" @click="startProcess(record)"><a-icon type="login"/>发起流程</a-menu-item>
+          <a-menu-item key="2" @click="startProcess(record)"><a-icon type="check"/>审批通过</a-menu-item>
+          <a-menu-item key="3" @click="startProcess(record)"><a-icon type="rollback"/>审批驳回</a-menu-item>
+        </a-menu>
+        <a-button style="margin-left: 8px"> 流程操作 <a-icon type="down" /></a-button>
+      </a-dropdown>
+      <#else>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="batchDel"><a-icon type="delete"/>删除</a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px"> 批量操作 <a-icon type="down" /></a-button>
       </a-dropdown>
+      </#if>
     </div>
 
     <!-- table区域-begin -->
@@ -187,7 +200,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
+          <a <#if bpm_flag> :disabled="disabled" </#if>  @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -197,13 +210,13 @@
                 <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
               <#if bpm_flag>
-              <a-menu-item v-if="record.bpmStatus === '1'">
-                <a @click="startProcess(record)">发起流程</a>
+              <a-menu-item <#if bpm_flag> :disabled="disabled" </#if>  v-if="record.bpmStatus === '1'">
+                <a <#if bpm_flag> :disabled="disabled" </#if>  @click="startProcess(record)">发起流程</a>
               </a-menu-item>
               </#if>
-              <a-menu-item>
+              <a-menu-item <#if bpm_flag> :disabled="disabled" </#if> >
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
-                  <a>删除</a>
+                  <a <#if bpm_flag> :disabled="disabled" </#if>>删除</a>
                 </a-popconfirm>
               </a-menu-item>
             </a-menu>

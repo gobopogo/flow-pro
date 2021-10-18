@@ -163,7 +163,7 @@
               </span>
             </a-select-option>
           </a-select>
-          <a href="javascrip:void(0)" @click="viewForm()">预览表单</a>
+          <a @click="viewForm()">预览表单</a>
         </a-form-item>
 
 <!--        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="关联打印报表" >
@@ -582,8 +582,6 @@
           return;
         }
         let formComponent = this.getFormComponent(routeName);
-        console.log(formComponent)
-        // this.lcModa.formComponent = formComponent.component;
         this.lcModa.formComponent = () => import(`@/${formComponent.component}`);
         this.lcModa.title = '流程表单预览：'+formComponent.text;
         this.lcModa.visible = true;

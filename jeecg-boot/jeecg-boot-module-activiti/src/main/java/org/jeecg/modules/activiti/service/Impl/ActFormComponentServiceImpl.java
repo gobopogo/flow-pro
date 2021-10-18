@@ -1,7 +1,6 @@
 package org.jeecg.modules.activiti.service.Impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
 import org.jeecg.modules.activiti.entity.ActFormComponent;
 import org.jeecg.modules.activiti.mapper.ActFormComponentMapper;
 import org.jeecg.modules.activiti.service.IActFormComponentService;

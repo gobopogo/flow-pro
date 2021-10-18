@@ -11,6 +11,26 @@ import store from '@/store'
 import {Modal} from 'ant-design-vue'
 
 export const JeecgListMixin = {
+  props: {
+    /*全局禁用，可表示查看*/
+    disabled: {
+      type: Boolean,
+      default: false,
+      required: false
+    },
+    /*流程数据*/
+    processData: {
+      type: Object,
+      default: () => {
+        return {}
+      },
+      required: false
+    },
+    /*是否新增*/
+    isNew: { type: Boolean, default: false, required: false },
+    /*是否处理流程*/
+    task: { type: Boolean, default: false, required: false }
+  },
   data(){
     return {
       /* 查询条件-请不要在queryParam中声明非字符串值的属性 */
@@ -53,6 +73,18 @@ export const JeecgListMixin = {
     }
   },
   created() {
+      console.log('流程数据', this.processData)
+      console.log('disabled', this.disabled)
+      console.log('isNew', this.isNew)
+      console.log('task', this.task)
+      let username = store.getters.userInfo.username;
+      console.log('username', username)
+
+      if(this.isNew) {
+        this.queryParam.bpmStatus = "1"
+        this.queryParam.createBy = username
+      }
+
       if(!this.disableMixinCreated){
         console.log(' -- mixin created -- ')
         this.loadData();
@@ -61,15 +93,15 @@ export const JeecgListMixin = {
       }
   },
   computed: {
-    //token header
-    // tokenHeader(){
-    //   let head = {'X-Access-Token': Vue.ls.get(ACCESS_TOKEN)}
-    //   let tenantid = Vue.ls.get(TENANT_ID)
-    //   if(tenantid){
-    //     head['tenant-id'] = tenantid
-    //   }
-    //   return head;
-    // },
+    // token header
+    tokenHeader(){
+      let head = {'X-Access-Token': Vue.ls.get(ACCESS_TOKEN)}
+      let tenantid = Vue.ls.get(TENANT_ID)
+      if(tenantid){
+        head['tenant-id'] = tenantid
+      }
+      return head;
+    },
     scroll:function(){
       var width = window.innerWidth;
       let $antTable = window.document.getElementsByClassName("ant-row");
@@ -380,6 +412,18 @@ export const JeecgListMixin = {
       let url = getFileAccessHttpUrl(text)
       window.open(url);
     },
+    close() {
+      //todo 关闭后的回调
+      this.$emit('close')
+    },
+    /*通过审批*/
+    passTask() {
+      this.$emit('passTask')
+    },
+    /*驳回审批*/
+    backTask() {
+      this.$emit('backTask')
+    }
   }
 
 }

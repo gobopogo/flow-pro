@@ -8,17 +8,17 @@
     :okButtonProps="{ class:{'jee-hidden': disableSubmit} }"
     @cancel="handleCancel"
     cancelText="关闭">
-    <act-b-leave-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></act-b-leave-form>
+    <employee-bmp-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit"></employee-bmp-form>
   </j-modal>
 </template>
 
 <script>
 
-  import ActBLeaveForm from './ActBLeaveForm'
+  import EmployeeBmpForm from './EmployeeBmpForm'
   export default {
-    name: 'ActBLeaveModal',
+    name: 'EmployeeBmpModal',
     components: {
-      ActBLeaveForm
+      EmployeeBmpForm
     },
     data () {
       return {

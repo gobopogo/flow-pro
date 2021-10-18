@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
-import org.jeecg.modules.business.entity.ActBLeave;
-import org.jeecg.modules.business.service.IActBLeaveService;
+import org.jeecg.modules.business.entity.EmployeeBmp;
+import org.jeecg.modules.business.service.IEmployeeBmpService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -35,70 +35,69 @@ import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.aspect.annotation.AutoLog;
-import springfox.documentation.annotations.ApiIgnore;
 
-/**
- * @Description: 请假流程表单
+ /**
+ * @Description: employee_bmp
  * @Author: jeecg-boot
- * @Date:   2021-06-09
+ * @Date:   2021-10-18
  * @Version: V1.0
  */
-@Api(tags="请假流程表单")
-@ApiIgnore
+@Api(tags="employee_bmp")
 @RestController
-@RequestMapping("/business/actBLeave")
+@RequestMapping("/business/employeeBmp")
 @Slf4j
-public class ActBLeaveController extends JeecgController<ActBLeave, IActBLeaveService> {
+public class EmployeeBmpController extends JeecgController<EmployeeBmp, IEmployeeBmpService> {
 	@Autowired
-	private IActBLeaveService actBLeaveService;
+	private IEmployeeBmpService employeeBmpService;
 	
 	/**
 	 * 分页列表查询
 	 *
-	 * @param actBLeave
+	 * @param employeeBmp
 	 * @param pageNo
 	 * @param pageSize
 	 * @param req
 	 * @return
 	 */
-	@AutoLog(value = "请假流程表单-分页列表查询")
-	@ApiOperation(value="请假流程表单-分页列表查询", notes="请假流程表单-分页列表查询")
+	@AutoLog(value = "employee_bmp-分页列表查询")
+	@ApiOperation(value="employee_bmp-分页列表查询", notes="employee_bmp-分页列表查询")
 	@GetMapping(value = "/list")
-	public Result<?> queryPageList(ActBLeave actBLeave,
+	public Result<?> queryPageList(EmployeeBmp employeeBmp,
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<ActBLeave> queryWrapper = QueryGenerator.initQueryWrapper(actBLeave, req.getParameterMap());
-		Page<ActBLeave> page = new Page<ActBLeave>(pageNo, pageSize);
-		IPage<ActBLeave> pageList = actBLeaveService.page(page, queryWrapper);
+		QueryWrapper<EmployeeBmp> queryWrapper = QueryGenerator.initQueryWrapper(employeeBmp, req.getParameterMap());
+		Page<EmployeeBmp> page = new Page<EmployeeBmp>(pageNo, pageSize);
+		IPage<EmployeeBmp> pageList = employeeBmpService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
 	
 	/**
 	 *   添加
 	 *
-	 * @param actBLeave
+	 * @param employeeBmp
 	 * @return
 	 */
-	@AutoLog(value = "请假流程表单-添加")
-	@ApiOperation(value="请假流程表单-添加", notes="请假流程表单-添加")
+	@AutoLog(value = "employee_bmp-添加")
+	@ApiOperation(value="employee_bmp-添加", notes="employee_bmp-添加")
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody ActBLeave actBLeave) {
-		actBLeaveService.save(actBLeave);
+	public Result<?> add(@RequestBody EmployeeBmp employeeBmp) {
+        employeeBmp.setBpmStatus("1");
+		employeeBmpService.save(employeeBmp);
 		return Result.OK("添加成功！");
 	}
 	
 	/**
 	 *  编辑
 	 *
-	 * @param actBLeave
+	 * @param employeeBmp
 	 * @return
 	 */
-	@AutoLog(value = "请假流程表单-编辑")
-	@ApiOperation(value="请假流程表单-编辑", notes="请假流程表单-编辑")
+	@AutoLog(value = "employee_bmp-编辑")
+	@ApiOperation(value="employee_bmp-编辑", notes="employee_bmp-编辑")
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody ActBLeave actBLeave) {
-		actBLeaveService.updateById(actBLeave);
+	public Result<?> edit(@RequestBody EmployeeBmp employeeBmp) {
+		employeeBmpService.updateById(employeeBmp);
 		return Result.OK("编辑成功!");
 	}
 	
@@ -108,11 +107,11 @@ public class ActBLeaveController extends JeecgController<ActBLeave, IActBLeaveSe
 	 * @param id
 	 * @return
 	 */
-	@AutoLog(value = "请假流程表单-通过id删除")
-	@ApiOperation(value="请假流程表单-通过id删除", notes="请假流程表单-通过id删除")
+	@AutoLog(value = "employee_bmp-通过id删除")
+	@ApiOperation(value="employee_bmp-通过id删除", notes="employee_bmp-通过id删除")
 	@DeleteMapping(value = "/delete")
 	public Result<?> delete(@RequestParam(name="id",required=true) String id) {
-		actBLeaveService.removeById(id);
+		employeeBmpService.removeById(id);
 		return Result.OK("删除成功!");
 	}
 	
@@ -122,11 +121,11 @@ public class ActBLeaveController extends JeecgController<ActBLeave, IActBLeaveSe
 	 * @param ids
 	 * @return
 	 */
-	@AutoLog(value = "请假流程表单-批量删除")
-	@ApiOperation(value="请假流程表单-批量删除", notes="请假流程表单-批量删除")
+	@AutoLog(value = "employee_bmp-批量删除")
+	@ApiOperation(value="employee_bmp-批量删除", notes="employee_bmp-批量删除")
 	@DeleteMapping(value = "/deleteBatch")
 	public Result<?> deleteBatch(@RequestParam(name="ids",required=true) String ids) {
-		this.actBLeaveService.removeByIds(Arrays.asList(ids.split(",")));
+		this.employeeBmpService.removeByIds(Arrays.asList(ids.split(",")));
 		return Result.OK("批量删除成功!");
 	}
 	
@@ -136,26 +135,26 @@ public class ActBLeaveController extends JeecgController<ActBLeave, IActBLeaveSe
 	 * @param id
 	 * @return
 	 */
-	@AutoLog(value = "请假流程表单-通过id查询")
-	@ApiOperation(value="请假流程表单-通过id查询", notes="请假流程表单-通过id查询")
+	@AutoLog(value = "employee_bmp-通过id查询")
+	@ApiOperation(value="employee_bmp-通过id查询", notes="employee_bmp-通过id查询")
 	@GetMapping(value = "/queryById")
 	public Result<?> queryById(@RequestParam(name="id",required=true) String id) {
-		ActBLeave actBLeave = actBLeaveService.getById(id);
-		if(actBLeave==null) {
+		EmployeeBmp employeeBmp = employeeBmpService.getById(id);
+		if(employeeBmp==null) {
 			return Result.error("未找到对应数据");
 		}
-		return Result.OK(actBLeave);
+		return Result.OK(employeeBmp);
 	}
 
     /**
     * 导出excel
     *
     * @param request
-    * @param actBLeave
+    * @param employeeBmp
     */
     @RequestMapping(value = "/exportXls")
-    public ModelAndView exportXls(HttpServletRequest request, ActBLeave actBLeave) {
-        return super.exportXls(request, actBLeave, ActBLeave.class, "请假流程表单");
+    public ModelAndView exportXls(HttpServletRequest request, EmployeeBmp employeeBmp) {
+        return super.exportXls(request, employeeBmp, EmployeeBmp.class, "employee_bmp");
     }
 
     /**
@@ -167,7 +166,7 @@ public class ActBLeaveController extends JeecgController<ActBLeave, IActBLeaveSe
     */
     @RequestMapping(value = "/importExcel", method = RequestMethod.POST)
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
-        return super.importExcel(request, response, ActBLeave.class);
+        return super.importExcel(request, response, EmployeeBmp.class);
     }
 
 }

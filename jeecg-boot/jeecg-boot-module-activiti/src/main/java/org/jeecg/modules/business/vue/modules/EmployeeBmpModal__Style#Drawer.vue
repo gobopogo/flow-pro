@@ -7,7 +7,7 @@
     @close="close"
     destroyOnClose
     :visible="visible">
-    <act-b-leave-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit" normal></act-b-leave-form>
+    <employee-bmp-form ref="realForm" @ok="submitCallback" :disabled="disableSubmit" normal></employee-bmp-form>
     <div class="drawer-footer">
       <a-button @click="handleCancel" style="margin-bottom: 0;">关闭</a-button>
       <a-button v-if="!disableSubmit"  @click="handleOk" type="primary" style="margin-bottom: 0;">提交</a-button>
@@ -17,12 +17,12 @@
 
 <script>
 
-  import ActBLeaveForm from './ActBLeaveForm'
+  import EmployeeBmpForm from './EmployeeBmpForm'
 
   export default {
-    name: 'ActBLeaveModal',
+    name: 'EmployeeBmpModal',
     components: {
-      ActBLeaveForm
+      EmployeeBmpForm
     },
     data () {
       return {
