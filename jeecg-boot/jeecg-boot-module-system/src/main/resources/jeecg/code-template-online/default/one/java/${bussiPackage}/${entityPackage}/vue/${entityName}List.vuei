@@ -136,8 +136,8 @@
       <a-dropdown <#if bpm_flag> :disabled="disabled" </#if> v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="startProcess(record)"><a-icon type="login"/>发起流程</a-menu-item>
-          <a-menu-item key="2" @click="startProcess(record)"><a-icon type="check"/>审批通过</a-menu-item>
-          <a-menu-item key="3" @click="startProcess(record)"><a-icon type="rollback"/>审批驳回</a-menu-item>
+          <a-menu-item <#if bpm_flag> :disabled="isNew" </#if> key="2" @click="startProcess(record)"><a-icon type="check"/>审批通过</a-menu-item>
+          <a-menu-item <#if bpm_flag> :disabled="isNew" </#if> key="3" @click="startProcess(record)"><a-icon type="rollback"/>审批驳回</a-menu-item>
         </a-menu>
         <a-button style="margin-left: 8px"> 流程操作 <a-icon type="down" /></a-button>
       </a-dropdown>
@@ -209,11 +209,6 @@
               <a-menu-item>
                 <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
-              <#if bpm_flag>
-              <a-menu-item <#if bpm_flag> :disabled="disabled" </#if>  v-if="record.bpmStatus === '1'">
-                <a <#if bpm_flag> :disabled="disabled" </#if>  @click="startProcess(record)">发起流程</a>
-              </a-menu-item>
-              </#if>
               <a-menu-item <#if bpm_flag> :disabled="disabled" </#if> >
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a <#if bpm_flag> :disabled="disabled" </#if>>删除</a>
