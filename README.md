@@ -8,17 +8,17 @@
     具体配置请参见 JeecgBoot 开发文档： http://doc.jeecg.com
     本项目对JeecgBoot online代码生成器的模板进行了改造，主要修改了前端项目vue部分，以便生成的代码无缝的对接到工作流中。
     业务表单中额外需要两个字段：bpm_status 通过这个标识在模板中区分工作流表单和普通表单。
-                            bpm_id 工作流标识，用于标识一个工作流实例包含多条业务数据。
+                            bpm_id 工作流标识，用于标识一个工作流实例包含多条业务数据。  
 online代码生成器，生成代码  
 ![](jeecg-boot/img/img_18.png)
 修改代码生成器模板   
-![](jeecg-boot/img/img_20.png)
+![](jeecg-boot/img/img_20.png)  
 业务表单需特别的字段  
 ![](jeecg-boot/img/img_19.png)
 2. 业务表单和工作流桥接，用于对接工作流和业务表单。根据表单生成器生成代码的路径来配置表单的路由，路径，数据库主表名称和子表名称。
 配置路径需参照代码生成的物理位置,以及vue代码拷贝到前端项目的位置。  
 ![](jeecg-boot/img/img_22.png)
-![](jeecg-boot/img/img_23.png)
+![](jeecg-boot/img/img_23.png)  
 配置表单信息  
 ![](jeecg-boot/img/img_21.png)
 3. 高可用工作流，实现全配置。流程判断灵活，主表记录的所有字段值都可作为条件判断依据。
