@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 /**
  * @Description: employee_bmp
  * @Author: jeecg-boot
- * @Date:   2021-10-18
+ * @Date:   2021-10-20
  * @Version: V1.0
  */
 public interface IEmployeeBmpService extends IService<EmployeeBmp> {

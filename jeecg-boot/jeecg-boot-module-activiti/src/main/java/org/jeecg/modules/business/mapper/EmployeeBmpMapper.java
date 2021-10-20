@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 /**
  * @Description: employee_bmp
  * @Author: jeecg-boot
- * @Date:   2021-10-18
+ * @Date:   2021-10-20
  * @Version: V1.0
  */
 public interface EmployeeBmpMapper extends BaseMapper<EmployeeBmp> {

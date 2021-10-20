@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 /**
  * @Description: employee_bmp
  * @Author: jeecg-boot
- * @Date:   2021-10-18
+ * @Date:   2021-10-20
  * @Version: V1.0
  */
 @Data
@@ -154,7 +154,7 @@ public class EmployeeBmp implements Serializable {
 	/**工龄*/
 	@Excel(name = "工龄", width = 15)
     @ApiModelProperty(value = "工龄")
-    private java.lang.Integer workage;
+    private java.lang.Integer days;
 	/**创建人*/
     @ApiModelProperty(value = "创建人")
     private java.lang.String createBy;
@@ -178,4 +178,8 @@ public class EmployeeBmp implements Serializable {
 	@Excel(name = "流程状态", width = 15)
     @ApiModelProperty(value = "流程状态")
     private java.lang.String bpmStatus;
+	/**busineeid*/
+	@Excel(name = "busineeid", width = 15)
+    @ApiModelProperty(value = "busineeid")
+    private java.lang.String bpmId;
 }

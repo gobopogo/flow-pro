@@ -17,14 +17,9 @@
         <a-button  :disabled="disabled"  type="primary" icon="import">导入</a-button>
       </a-upload>
       <!-- 高级查询区域 -->
-      <a-dropdown  :disabled="disabled"  v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="startProcess(record)"><a-icon type="login"/>发起流程</a-menu-item>
-          <a-menu-item  :disabled="isNew"  key="2" @click="startProcess(record)"><a-icon type="check"/>审批通过</a-menu-item>
-          <a-menu-item  :disabled="isNew"  key="3" @click="startProcess(record)"><a-icon type="rollback"/>审批驳回</a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px"> 流程操作 <a-icon type="down" /></a-button>
-      </a-dropdown>
+      <a-button :disabled="!isNew" @click="handleSubmit" type="danger" icon="login">发起流程</a-button>
+      <a-button :disabled="!task" @click="passTask" type="danger" icon="check">审批通过</a-button>
+      <a-button :disabled="!task" @click="backTask" type="danger" icon="rollback">审批驳回</a-button>
     </div>
 
     <!-- table区域-begin -->
@@ -69,7 +64,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a  :disabled="disabled"   @click="handleEdit(record)">编辑</a>
+          <a @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -274,12 +269,17 @@
           {
             title:'工龄',
             align:"center",
-            dataIndex: 'workage'
+            dataIndex: 'days'
           },
           {
             title:'流程状态',
             align:"center",
             dataIndex: 'bpmStatus'
+          },
+          {
+            title:'busineeid',
+            align:"center",
+            dataIndex: 'bpmId'
           },
           {
             title: '操作',
@@ -296,7 +296,7 @@
           deleteBatch: "/business/employeeBmp/deleteBatch",
           exportXlsUrl: "/business/employeeBmp/exportXls",
           importExcelUrl: "business/employeeBmp/importExcel",
-          startProcess: '/act/process/extActProcess/startMutilProcess'
+          startProcess: '/actBusiness/addOnline'
         },
         //代码生成后需手动设置流程编码
         flowCode: 'dev_employee_bmp_001',
@@ -368,8 +368,9 @@
         fieldList.push({type:'date',value:'notworkdate',text:'离职日期'})
         fieldList.push({type:'date',value:'begincontract',text:'合同起始日期'})
         fieldList.push({type:'date',value:'endcontract',text:'合同终止日期'})
-        fieldList.push({type:'int',value:'workage',text:'工龄'})
+        fieldList.push({type:'int',value:'days',text:'工龄'})
         fieldList.push({type:'string',value:'bpmStatus',text:'流程状态'})
+        fieldList.push({type:'string',value:'bpmId',text:'busineeid'})
         this.superFieldList = fieldList
       }
     }

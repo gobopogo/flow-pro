@@ -50,6 +50,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class ActZprocessServiceImpl extends ServiceImpl<ActZprocessMapper, ActZprocess> implements IActZprocessService {
+    private static final String SPLIT_FLAG = ",";
     @Autowired
     private RuntimeService runtimeService;
     @Autowired
@@ -126,7 +127,8 @@ public class ActZprocessServiceImpl extends ServiceImpl<ActZprocessMapper, ActZp
             throw new JeecgBootException("没有业务表单数据");
         }
         /*表单数据写入*/
-        Map<String, Object> busiData = actBusinessService.getBusiData(tableId, tableName);
+        String id = Arrays.stream(tableId.split(SPLIT_FLAG)).findFirst().get();
+        Map<String, Object> busiData = actBusinessService.getBusiData(id, tableName);
         for (String key : busiData.keySet()) {
             params.put(key, busiData.get(key));
         }
