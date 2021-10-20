@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ActBusinessServiceImpl extends ServiceImpl<ActBusinessMapper, ActBusiness> implements IActBusinessService {
+    private static final String SPLIT_FLAG = ",";
     @Autowired
     private TaskService taskService;
 
@@ -185,7 +186,7 @@ public class ActBusinessServiceImpl extends ServiceImpl<ActBusinessMapper, ActBu
             filedsVb.append(",'").append(userName).append("'");
             filedsB.append("," + "create_time");
             filedsVb.append(",'").append(DateUtils.formatDate(new Date(), "yyyy-MM-dd")).append("'");
-            this.baseMapper.insertBusiData(String.format("INSERT INTO %s (%s) VALUES (%s)", tableName, filedsB.toString(), filedsVb.toString()));
+            this.baseMapper.insertBusiData(String.format("INSERT INTO %s (%s) VALUES (%s)", tableName, filedsB, filedsVb));
         } else { //有，修改
             StringBuilder setSql = new StringBuilder();
             for (String filed : fileds) {
@@ -211,7 +212,8 @@ public class ActBusinessServiceImpl extends ServiceImpl<ActBusinessMapper, ActBu
     }
 
     public Map<String, Object> getApplyForm(String tableId, String tableName) {
-        Map<String, Object> busiData = this.getBusiData(tableId, tableName);
+        String id = Arrays.stream(tableId.split(SPLIT_FLAG)).findFirst().get();
+        Map<String, Object> busiData = this.getBusiData(id, tableName);
         Object createBy = busiData.get("createBy");
         if (createBy != null) {
             String depName = sysBaseApi.getDepartNamesByUsername(createBy.toString()).get(0);
@@ -252,6 +254,18 @@ public class ActBusinessServiceImpl extends ServiceImpl<ActBusinessMapper, ActBu
     public void updateBusinessStatus(String tableName, String tableId, String actStatus) {
         try {
             baseMapper.updateBusinessStatus(tableName, tableId, actStatus);
+        } catch (Exception e) {
+            // 业务表需要有 act_status字段，没有会报错，不管他
+            log.warn(e.getMessage());
+        }
+    }
+
+    /**
+     * 修改业务表的流程字段,流程标识
+     */
+    public void updateBusinessStatusAndId(String tableName, String tableId, String actStatus, String actId) {
+        try {
+            baseMapper.updateBusinessStatusAndId(tableName, tableId, actStatus, actId);
         } catch (Exception e) {
             // 业务表需要有 act_status字段，没有会报错，不管他
             log.warn(e.getMessage());
@@ -323,7 +337,7 @@ public class ActBusinessServiceImpl extends ServiceImpl<ActBusinessMapper, ActBu
             );
             if (businessList.size() > 0) {
                 // 定义id
-                List<String> pids = businessList.stream().filter(act -> act.getProcInstId() != null).map(ActBusiness::getProcInstId).collect(Collectors.toList());
+                List<String> pids = businessList.stream().map(ActBusiness::getProcInstId).filter(Objects::nonNull).collect(Collectors.toList());
                 query.processInstanceIdIn(pids);
             } else {
                 query.processInstanceIdIn(Lists.newArrayList(""));

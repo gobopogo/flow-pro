@@ -94,7 +94,32 @@ public class ActBusinessController {
         } else {
             actBusiness = actBusinessService.getOne(new LambdaQueryWrapper<ActBusiness>().eq(ActBusiness::getTableId, tableId).last("limit 1"));
         }
+        actBusinessService.updateBusinessStatus(actBusiness.getTableName(), actBusiness.getTableId(), "2");
+        return Result.OK(actBusiness);
+    }
 
+    @AutoLog(value = "流程-添加申请online")
+    @ApiOperation(value = "流程-添加申请online", notes = "添加申请草稿状态,业务表单数据已经具备,只需要操作actBusiness！")
+    @PostMapping(value = "/addOnline")
+    public Result<ActBusiness> addOnline(@ApiParam(value = "流程定义Id", required = true) String procDefId,
+                                         @ApiParam(value = "申请标题", required = true) String procDeTitle,
+                                         @ApiParam(value = "数据表名", required = true) String tableName,
+                                         @ApiParam(value = "数据标识", required = true) String tableId) {
+        // 新增数据 保存至我的申请业务
+        String uuid = UUIDGenerator.generate();
+        ActBusiness actBusiness = new ActBusiness();
+        LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+        String username = sysUser.getUsername();
+        actBusiness.setId(uuid);
+        actBusiness.setUserId(username);
+        actBusiness.setTableId(tableId);
+        actBusiness.setProcDefId(procDefId);
+        actBusiness.setTitle(procDeTitle);
+        actBusiness.setTableName(tableName);
+        actBusinessService.save(actBusiness);
+        for (String id : tableId.split(SPLIT_FLAG)) {
+            actBusinessService.updateBusinessStatusAndId(actBusiness.getTableName(), id, "2",uuid);
+        }
         return Result.OK(actBusiness);
     }
 
@@ -164,7 +189,8 @@ public class ActBusinessController {
         String tableId = actBusiness.getTableId();
         String tableName = actBusiness.getTableName();
         act.setTableId(tableId);
-        Map<String, Object> busiData = actBusinessService.getBusiData(tableId, tableName);
+        String tid = Arrays.stream(tableId.split(SPLIT_FLAG)).findFirst().get();
+        Map<String, Object> busiData = actBusinessService.getBusiData(tid, tableName);
 
         if (MapUtil.isNotEmpty(busiData) && busiData.get(ActivitiConstant.TITLE_KEY) != null) {
             //如果表单里有 标题  更新一下
@@ -177,7 +203,9 @@ public class ActBusinessController {
         actBusiness.setApplyTime(new Date());
         actBusinessService.updateById(actBusiness);
         //修改业务表的流程字段
-        actBusinessService.updateBusinessStatus(actBusiness.getTableName(), actBusiness.getTableId(), "启动");
+        for (String id : actBusiness.getTableId().split(SPLIT_FLAG)) {
+            actBusinessService.updateBusinessStatus(actBusiness.getTableName(), id, "3");
+        }
         return Result.OK("操作成功", null);
     }
 
@@ -197,7 +225,9 @@ public class ActBusinessController {
         actBusiness.setResult(ActivitiConstant.RESULT_TO_SUBMIT);
         actBusinessService.updateById(actBusiness);
         //修改业务表的流程字段
-        actBusinessService.updateBusinessStatus(actBusiness.getTableName(), actBusiness.getTableId(), "撤回");
+        for (String tableId : actBusiness.getTableId().split(SPLIT_FLAG)) {
+            actBusinessService.updateBusinessStatus(actBusiness.getTableName(), tableId, "4");
+        }
         return Result.OK("操作成功");
     }
 

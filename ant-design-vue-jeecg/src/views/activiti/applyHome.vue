@@ -163,7 +163,7 @@
       /*提交成功申请后*/
       afterSub(formData){
           this.lcModa.visible = false;
-          this.$message("请前往我的申请列表提交审批！")
+          // this.$message("请前往我的申请列表提交审批！")
       },
       /*前往我的申请页面*/
       handleToApplyList() {

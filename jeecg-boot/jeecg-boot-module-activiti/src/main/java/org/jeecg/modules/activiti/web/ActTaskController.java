@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/actTask")
 @Transactional(rollbackFor = Exception.class)
-@Api(tags = "工作流-流程办理,我的已办")
+@Api(tags = "工作流-我的待办,我的已办")
 public class ActTaskController {
 
     private final TaskService taskService;
@@ -287,7 +287,9 @@ public class ActTaskController {
         actBusinessService.inserthiIdentitylink(IdUtil.simpleUUID(),
                 ActivitiConstant.ACTUAL_EXECUTOR_B, sysUser.getUsername(), id, procInstId);
         //修改业务表的流程字段
-        actBusinessService.updateBusinessStatus(actBusiness.getTableName(), actBusiness.getTableId(), "驳回");
+        for (String tableId : actBusiness.getTableId().split(SPLIT_FLAG)) {
+            actBusinessService.updateBusinessStatus(actBusiness.getTableName(), tableId, "6");
+        }
         return Result.OK("操作成功");
     }
 
@@ -371,7 +373,8 @@ public class ActTaskController {
         LambdaQueryWrapper<ActBusiness> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(ActBusiness::getProcInstId, pi.getProcessInstanceId());
         ActBusiness one = actBusinessService.getOne(queryWrapper);
-        Map<String, Object> busiData = actBusinessService.getBusiData(one.getTableId(), one.getTableName());
+        String tid = Arrays.stream(one.getTableId().split(SPLIT_FLAG)).findFirst().get();
+        Map<String, Object> busiData = actBusinessService.getBusiData(tid, one.getTableName());
 
         //获取所有流程变量 并修改
         for (String key : busiData.keySet()) {
@@ -388,8 +391,9 @@ public class ActTaskController {
         /*完成任务*/
         taskService.complete(id);
         //修改业务表的流程字段
-        actBusinessService.updateBusinessStatus(actBusiness.getTableName(), actBusiness.getTableId(), "审批中-" + task.getTaskDefinitionKey() + "-" + task.getName());
-
+        for (String tableId : actBusiness.getTableId().split(SPLIT_FLAG)) {
+            actBusinessService.updateBusinessStatus(actBusiness.getTableName(), tableId, "7");
+        }
         LoginUser loginUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(procInstId).list();
         // 判断下一个节点
@@ -404,8 +408,9 @@ public class ActTaskController {
                         actBusiness.setResult(ActivitiConstant.RESULT_TO_SUBMIT);
                         actBusinessService.updateById(actBusiness);
                         //修改业务表的流程字段
-                        actBusinessService.updateBusinessStatus(actBusiness.getTableName(), actBusiness.getTableId(), "审批异常-" + task.getTaskDefinitionKey() + "-" + task.getName() + "-审批节点未分配审批人，流程自动中断取消");
-
+                        for (String tableId : actBusiness.getTableId().split(SPLIT_FLAG)) {
+                            actBusinessService.updateBusinessStatus(actBusiness.getTableName(), tableId, "8");
+                        }
                         break;
                     } else {
                         List<String> list = actBusinessService.selectRunIdentity(tasks.get(loop).getId(), ActivitiConstant.EXECUTOR_CANDIDATE);
@@ -457,8 +462,9 @@ public class ActTaskController {
             actZprocessService.sendMessage(actBusiness.getId(), loginUser, user, ActivitiConstant.MESSAGE_PASS_CONTENT,
                     String.format("您的 【%s】 申请已通过！", actBusiness.getTitle()), sendMessage, sendSms, sendEmail);
             //修改业务表的流程字段
-            actBusinessService.updateBusinessStatus(actBusiness.getTableName(), actBusiness.getTableId(), "审批通过");
-
+            for (String tableId : actBusiness.getTableId().split(SPLIT_FLAG)) {
+                actBusinessService.updateBusinessStatus(actBusiness.getTableName(), tableId, "5");
+            }
         }
         // 记录实际审批人员
         actBusinessService.inserthiIdentitylink(IdUtil.simpleUUID(),

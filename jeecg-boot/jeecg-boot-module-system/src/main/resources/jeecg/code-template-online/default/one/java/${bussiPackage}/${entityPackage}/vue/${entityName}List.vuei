@@ -133,14 +133,9 @@
       <j-super-query :fieldList="superFieldList" ref="superQueryModal" @handleSuperQuery="handleSuperQuery"></j-super-query>
       </#if>
       <#if bpm_flag>
-      <a-dropdown <#if bpm_flag> :disabled="disabled" </#if> v-if="selectedRowKeys.length > 0">
-        <a-menu slot="overlay">
-          <a-menu-item key="1" @click="startProcess(record)"><a-icon type="login"/>发起流程</a-menu-item>
-          <a-menu-item <#if bpm_flag> :disabled="isNew" </#if> key="2" @click="startProcess(record)"><a-icon type="check"/>审批通过</a-menu-item>
-          <a-menu-item <#if bpm_flag> :disabled="isNew" </#if> key="3" @click="startProcess(record)"><a-icon type="rollback"/>审批驳回</a-menu-item>
-        </a-menu>
-        <a-button style="margin-left: 8px"> 流程操作 <a-icon type="down" /></a-button>
-      </a-dropdown>
+      <a-button :disabled="!isNew" @click="handleSubmit" type="danger" icon="login">发起流程</a-button>
+      <a-button :disabled="!task" @click="passTask" type="danger" icon="check">审批通过</a-button>
+      <a-button :disabled="!task" @click="backTask" type="danger" icon="rollback">审批驳回</a-button>
       <#else>
       <a-dropdown v-if="selectedRowKeys.length > 0">
         <a-menu slot="overlay">
@@ -200,7 +195,7 @@
         </template>
 
         <span slot="action" slot-scope="text, record">
-          <a <#if bpm_flag> :disabled="disabled" </#if>  @click="handleEdit(record)">编辑</a>
+          <a @click="handleEdit(record)">编辑</a>
 
           <a-divider type="vertical" />
           <a-dropdown>
@@ -330,7 +325,7 @@
           deleteBatch: "/${entityPackage}/${entityName?uncap_first}/deleteBatch",
           exportXlsUrl: "/${entityPackage}/${entityName?uncap_first}/exportXls",
           importExcelUrl: "${entityPackage}/${entityName?uncap_first}/importExcel",
-          <#if bpm_flag>startProcess: '/act/process/extActProcess/startMutilProcess'</#if>
+          <#if bpm_flag>startProcess: '/actBusiness/addOnline'</#if>
         },
         <#if bpm_flag>
         //代码生成后需手动设置流程编码

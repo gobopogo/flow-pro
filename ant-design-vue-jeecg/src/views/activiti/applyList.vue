@@ -530,7 +530,7 @@
           return;
         }
         isView = isView||false;
-        this.lcModa.disabled = isView;
+        this.lcModa.disabled = true;
         this.lcModa.title = '修改流程业务信息：'+r.title;
         if (isView) this.lcModa.title = '查看流程业务信息：'+r.title;
         this.lcModa.formComponent = () => import(`@/${this.getFormComponent(r.routeName).component}`);

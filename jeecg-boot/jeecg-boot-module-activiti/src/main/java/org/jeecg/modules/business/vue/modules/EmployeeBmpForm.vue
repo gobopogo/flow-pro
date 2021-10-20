@@ -134,13 +134,18 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
-            <a-form-model-item label="工龄" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="workage">
-              <a-input-number v-model="model.workage" placeholder="请输入工龄" style="width: 100%" />
+            <a-form-model-item label="工龄" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="days">
+              <a-input-number v-model="model.days" placeholder="请输入工龄" style="width: 100%" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="流程状态" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="bpmStatus">
               <a-input v-model="model.bpmStatus" placeholder="请输入流程状态"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
+            <a-form-model-item label="busineeid" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="bpmId">
+              <a-input v-model="model.bpmId" placeholder="请输入busineeid"  ></a-input>
             </a-form-model-item>
           </a-col>
           <a-col v-if="showFlowSubmitButton" :span="24" style="text-align: center">
