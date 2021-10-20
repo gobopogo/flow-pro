@@ -116,7 +116,7 @@
     <!--流程表单-->
     <a-modal :title="lcModa.title" v-model="lcModa.visible" :footer="null" :maskClosable="false" width="80%">
       <component :disabled="lcModa.disabled" v-if="lcModa.visible" :is="lcModa.formComponent"
-                 :processData="lcModa.processData" :isNew = "lcModa.isNew"
+                 :processData="lcModa.processData" :isNew = "lcModa.isNew" :task="lcModa.isTask"
                  @close="lcModa.visible=false,lcModa.disabled = false"></component>
     </a-modal>
   </div>
@@ -215,11 +215,10 @@ export default {
       }
       this.lcModa.disabled = true
       this.lcModa.title = '查看流程业务信息：' + r.processName
-      // this.lcModa.formComponent = this.getFormComponent(r.routeName).component
       this.lcModa.formComponent = () => import(`@/${this.getFormComponent(r.routeName).component}`);
       this.lcModa.processData = r
       this.lcModa.isNew = false
-      this.lcModa.isTask = true
+      this.lcModa.isTask = false
       this.lcModa.visible = true
     },
     history(r) {
