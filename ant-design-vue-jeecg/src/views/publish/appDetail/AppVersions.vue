@@ -344,15 +344,5 @@
       margin-left: 30px;
     }
 
-    /deep/ .el-timeline-item__timestamp {
-      font-size: 20px;
-      color: #4a4a4a;
-    }
-
-    /deep/ .el-timeline-item__wrapper {
-      top: -20px;
-      left: 5px;
-      padding-bottom: 50px;
-    }
   }
 </style>
