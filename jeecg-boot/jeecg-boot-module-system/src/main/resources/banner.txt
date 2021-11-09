@@ -1,25 +1,21 @@
 ${AnsiColor.BRIGHT_BLUE}
 
-
-                                    bbbbbbbb
-                                    b::::::b
-                                    b::::::b
-                                    b::::::b
-                                     b:::::b
-  aaaaaaaaaaaaa  rrrrr   rrrrrrrrr   b:::::bbbbbbbbb       ooooooooooo   rrrrr   rrrrrrrrr
-  a::::::::::::a r::::rrr:::::::::r  b::::::::::::::bb   oo:::::::::::oo r::::rrr:::::::::r
-  aaaaaaaaa:::::ar:::::::::::::::::r b::::::::::::::::b o:::::::::::::::or:::::::::::::::::r
-           a::::arr::::::rrrrr::::::rb:::::bbbbb:::::::bo:::::ooooo:::::orr::::::rrrrr::::::r
-    aaaaaaa:::::a r:::::r     r:::::rb:::::b    b::::::bo::::o     o::::o r:::::r     r:::::r
-  aa::::::::::::a r:::::r     rrrrrrrb:::::b     b:::::bo::::o     o::::o r:::::r     rrrrrrr
- a::::aaaa::::::a r:::::r            b:::::b     b:::::bo::::o     o::::o r:::::r
-a::::a    a:::::a r:::::r            b:::::b     b:::::bo::::o     o::::o r:::::r
-a::::a    a:::::a r:::::r            b:::::bbbbbb::::::bo:::::ooooo:::::o r:::::r
-a:::::aaaa::::::a r:::::r            b::::::::::::::::b o:::::::::::::::o r:::::r
- a::::::::::aa:::ar:::::r            b:::::::::::::::b   oo:::::::::::oo  r:::::r
-  aaaaaaaaaa  aaaarrrrrrr            bbbbbbbbbbbbbbbb      ooooooooooo    rrrrrrr
+                                                  ,-.----.
+    ,---,.  ,--,                                  \    /  \
+  ,'  .' |,--.'|                                  |   :    \
+,---.'   ||  | :     ,---.           .---.        |   |  .\ :  __  ,-.   ,---.
+|   |   .':  : '    '   ,'\         /. ./|        .   :  |: |,' ,'/ /|  '   ,'\
+:   :  :  |  ' |   /   /   |     .-'-. ' |        |   |   \ :'  | |' | /   /   |
+:   |  |-,'  | |  .   ; ,. :    /___/ \: |        |   : .   /|  |   ,'.   ; ,. :
+|   :  ;/||  | :  '   | |: : .-'.. '   ' .        ;   | |`-' '  :  /  '   | |: :
+|   |   .''  : |__'   | .; :/___/ \:     '        |   | ;    |  | '   '   | .; :
+'   :  '  |  | '.'|   :    |.   \  ' .\           :   ' |    ;  : |   |   :    |
+|   |  |  ;  :    ;\   \  /  \   \   ' \ |        :   : :    |  , ;    \   \  /
+|   :  \  |  ,   /  `----'    \   \  |--"         |   | :     ---'      `----'
+|   | ,'   ---`-'              \   \ |            `---'.|
+`----'                          '---"               `---`
 
 ${AnsiColor.BRIGHT_GREEN}
-Arbor Version: 1.0.0
+Flow Pro Version: 1.0.0
 Spring Boot Version: ${spring-boot.version}${spring-boot.formatted-version}
 ${AnsiColor.BLACK}

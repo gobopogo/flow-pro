@@ -1,3 +1,8 @@
+[![GitHub issues](https://img.shields.io/github/issues/dong-jianbin/activiti-jeecg-boot)](https://github.com/dong-jianbin/activiti-jeecg-boot/issues)
+[![GitHub forks](https://img.shields.io/github/forks/dong-jianbin/activiti-jeecg-boot)](https://github.com/dong-jianbin/activiti-jeecg-boot/network)
+[![GitHub stars](https://img.shields.io/github/stars/dong-jianbin/activiti-jeecg-boot)](https://github.com/dong-jianbin/activiti-jeecg-boot/stargazers)
+[![GitHub license](https://img.shields.io/github/license/dong-jianbin/activiti-jeecg-boot)](https://github.com/dong-jianbin/activiti-jeecg-boot)
+
 ## 目标
 *零代码 + 全配置 = ❤️工作流(复杂业务+简单操作)*
 

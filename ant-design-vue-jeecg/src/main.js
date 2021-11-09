@@ -9,42 +9,86 @@ import store from './store/'
 import { VueAxios } from "@/utils/request"
 import './icons/index' // icon
 
-// import ElementUI from 'element-ui'
-import { Button, 
-  Form, 
-  FormItem, 
-  Input, 
-  Card,
-  Container,
-  Upload,
-  Dialog,
-  Timeline,
-  TimelineItem,
-  ButtonGroup,
-  Loading,
-  Radio,
-  Header,
-  Main,
-  Aside
-} from 'element-ui'
-import locale from 'element-ui/lib/locale/lang/zh-CN'
+import '@/components/DynamicForm/styles/index.styl'
+import '@/components/DynamicForm/icons'
+import FormControls from './components/FormControls/index.js'
+Vue.use( FormControls )
+
+import ElementUI from 'element-ui'
+Vue.use( ElementUI );
 import 'element-ui/lib/theme-chalk/index.css'
-Vue.use(Button)
-Vue.use(Form)
-Vue.use(FormItem)
-Vue.use(Input)
-Vue.use(Card)
-Vue.use(Container)
-Vue.use(Upload)
-Vue.use(Dialog)
-Vue.use(Timeline)
-Vue.use(TimelineItem)
-Vue.use(ButtonGroup)
-Vue.use(Loading)
-Vue.use(Radio)
-Vue.use(Header)
-Vue.use(Main)
-Vue.use(Aside)
+
+// import { Button, 
+//   Form, 
+//   FormItem, 
+//   Input, 
+//   Card,
+//   Container,
+//   Upload,
+//   Dialog,
+//   Timeline,
+//   TimelineItem,
+//   ButtonGroup,
+//   Loading,
+//   Radio,
+//   Header,
+//   Main,
+//   Aside,
+//   Select,
+//   Option,
+//   Badge,
+//   Tooltip,
+//   Checkbox,
+//   Tag,
+//   InputNumber,
+//   RadioButton,
+//   RadioGroup,
+//   Switch,
+//   Divider,
+//   Slider,
+//   TabPane,
+//   Tabs,
+//   Col,
+//   DatePicker,
+//   Row,
+//   s
+
+// } from 'element-ui'
+
+// Vue.use(Button)
+// Vue.use(Form)
+// Vue.use(FormItem)
+// Vue.use(Input)
+// Vue.use(Card)
+// Vue.use(Container)
+// Vue.use(Upload)
+// Vue.use(Dialog)
+// Vue.use(Timeline)
+// Vue.use(TimelineItem)
+// Vue.use(ButtonGroup)
+// Vue.use(Loading)
+// Vue.use(Radio)
+// Vue.use(Header)
+// Vue.use(Main)
+// Vue.use(Aside)
+// Vue.use(Select)
+// Vue.use(Option)
+// Vue.use(Badge)
+// Vue.use(Tooltip)
+// Vue.use(Checkbox)
+// Vue.use(Tag)
+// Vue.use(InputNumber)
+// Vue.use(RadioButton)
+// Vue.use(RadioGroup)
+// Vue.use(Switch)
+// Vue.use(Divider)
+// Vue.use(Slider)
+// Vue.use(TabPane)
+// Vue.use(Tabs)
+// Vue.use(Col)
+// Vue.use(DatePicker)
+// Vue.use(Row)
+
 require('@jeecg/antd-online-mini')
 require('@jeecg/antd-online-mini/dist/OnlineForm.css')
 
