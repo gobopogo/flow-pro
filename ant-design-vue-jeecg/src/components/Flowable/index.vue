@@ -38,10 +38,17 @@ export default {
       ],
     };
   },
+  mounted() {
+    this.getModelDetail()
+  },
   methods: {
     getModelDetail() {
-      // Send request to get xml
-      // this.xml = response.xml
+      fetch('https://cdn.jsdelivr.net/gh/goldsubmarine/workflow-bpmn-modeler@master/src/Leave.bpmn20.xml')
+        .then(response => {
+          return response.text()
+        }).then(xml => {
+          this.xml = xml
+      })
     },
     save(data) {
       console.log(data);  // { process: {...}, xml: '...', svg: '...' }
