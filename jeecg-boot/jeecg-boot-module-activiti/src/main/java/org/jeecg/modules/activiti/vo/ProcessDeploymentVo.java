@@ -9,6 +9,11 @@ import lombok.ToString;
 @ToString
 public class ProcessDeploymentVo {
     /**
+     * 流程类别
+     */
+    private String category;
+
+    /**
      * 流程定义key
      */
     private String processKey;
@@ -19,9 +24,9 @@ public class ProcessDeploymentVo {
     private String processName;
 
     /**
-     * 流程发布文件名字
+     * 流程描述
      */
-    private String resourceName;
+    private String processDescription;
 
     /**
      * 流程定义内容
@@ -32,4 +37,5 @@ public class ProcessDeploymentVo {
      * 流程定义svg
      */
     private String svg;
+
 }

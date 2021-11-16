@@ -22,25 +22,26 @@ import org.activiti.engine.repository.ModelQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.explorer.util.XmlUtil;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.aspect.annotation.AutoLog;
 import org.jeecg.common.exception.JeecgBootException;
 import org.jeecg.modules.activiti.entity.ActZprocess;
+import org.jeecg.modules.activiti.service.IActModelService;
 import org.jeecg.modules.activiti.service.Impl.ActZprocessServiceImpl;
+import org.jeecg.modules.activiti.util.ImageUtil;
+import org.jeecg.modules.activiti.vo.ProcessDeploymentVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 import java.io.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -65,6 +66,7 @@ public class ActivitiModelController {
     private final TaskService taskService;
     private final ObjectMapper objectMapper;
     private final ActZprocessServiceImpl actZprocessService;
+    private final IActModelService iActModelService;
 
     @Autowired
     public ActivitiModelController(RepositoryService repositoryService,
@@ -73,7 +75,8 @@ public class ActivitiModelController {
                                    ProcessEngineConfiguration processEngineConfiguration,
                                    TaskService taskService,
                                    ObjectMapper objectMapper,
-                                   ActZprocessServiceImpl actZprocessService) {
+                                   ActZprocessServiceImpl actZprocessService,
+                                   IActModelService iActModelService) {
         this.repositoryService = repositoryService;
         this.historyService = historyService;
         this.runtimeService = runtimeService;
@@ -81,6 +84,7 @@ public class ActivitiModelController {
         this.taskService = taskService;
         this.objectMapper = objectMapper;
         this.actZprocessService = actZprocessService;
+        this.iActModelService = iActModelService;
     }
 
     public static final String NC_NAME = "NCName";
@@ -91,7 +95,7 @@ public class ActivitiModelController {
     public static final String JSON_SUFFIX = ".json";
     public static final String FILE_TYPE_JSON = "json";
     public static final String FILE_TYPE_BPMN = "bpmn";
-    public static final int READ_LENGTH= 1024;
+    public static final int READ_LENGTH = 1024;
 
     /**
      * 获取模型列表
@@ -174,65 +178,26 @@ public class ActivitiModelController {
     @AutoLog(value = "上传一个已有模型")
     @ApiOperation(value = "上传模型", notes = "上传一个已有模型，bpmn的xml文件.插入ACT_RE_MODEL，插入ACT_GE_BYTEARRAY（name=source,deployment=null）")
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-    public Result<Object> deployUploadedFile(@ApiParam(value = "上传的文件") @RequestParam("uploadfile") MultipartFile uploadfile) {
-        InputStreamReader in = null;
-        if (uploadfile == null) {
+    public Result<Object> deployUploadedFile(@ApiParam(value = "上传的文件") @RequestParam("uploadFile") MultipartFile uploadFile) {
+        InputStreamReader in;
+        if (uploadFile == null) {
             return Result.error("上传模型不能为空");
         }
-        String fileName = uploadfile.getOriginalFilename();
+        String fileName = uploadFile.getOriginalFilename();
         if (fileName == null) {
             return Result.error("文件名不能为空");
         }
         if (!(fileName.endsWith(BPMN_XML_SUFFIX) || fileName.endsWith(BPMN_SUFFIX))) {
             return Result.error("文件类型错误");
         }
+
         try {
-            XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
-            in = new InputStreamReader(new ByteArrayInputStream(uploadfile.getBytes()), StandardCharsets.UTF_8);
-            XMLStreamReader xtr = xif.createXMLStreamReader(in);
-            BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
-
-            if (bpmnModel.getMainProcess() == null || bpmnModel.getMainProcess().getId() == null) {
-                System.out.println("err1");
-            } else {
-                if (bpmnModel.getLocationMap().isEmpty()) {
-                    System.out.println("err2");
-                } else {
-                    String processName;
-                    if (StringUtils.isNotEmpty(bpmnModel.getMainProcess().getName())) {
-                        processName = bpmnModel.getMainProcess().getName();
-                    } else {
-                        processName = bpmnModel.getMainProcess().getId();
-                    }
-                    Model modelData;
-                    modelData = repositoryService.newModel();
-                    ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
-                    modelObjectNode.put(ModelDataJsonConstants.MODEL_NAME, processName);
-                    modelObjectNode.put(ModelDataJsonConstants.MODEL_REVISION, 1);
-                    modelObjectNode.put(ModelDataJsonConstants.MODEL_DESCRIPTION, processName);
-                    modelData.setMetaInfo(modelObjectNode.toString());
-                    modelData.setName(processName);
-                    modelData.setKey(processName);
-
-                    repositoryService.saveModel(modelData);
-
-                    BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
-                    ObjectNode editorNode = jsonConverter.convertToJson(bpmnModel);
-
-                    repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes(StandardCharsets.UTF_8));
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("err4");
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException e) {
-                    System.out.println("err5");
-                }
-            }
+            in = new InputStreamReader(new ByteArrayInputStream(uploadFile.getBytes()), StandardCharsets.UTF_8);
+            iActModelService.createModel(in, null);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
         return Result.OK("上传模型成功");
     }
 
@@ -322,6 +287,23 @@ public class ActivitiModelController {
         }
 
         return Result.OK("部署成功");
+    }
+
+    @AutoLog(value = "创建模型并发布模型")
+    @ApiOperation(value = "创建模型并发布模型", notes = "用于简单流程,前端集成页面的创建发布流程")
+    @RequestMapping(value = "/createanddeployment", method = RequestMethod.POST)
+    public @ResponseBody
+    Result<Object> createanddeployment(@RequestBody ProcessDeploymentVo deployment) {
+        try {
+            InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(deployment.getXml().getBytes()), StandardCharsets.UTF_8);
+            String  modelId = iActModelService.createModel(in, deployment);
+            if(!StringUtils.isEmpty(modelId)) {
+                deploy(modelId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Result.OK("流程创建发布成功");
     }
 
     /**

@@ -14,6 +14,7 @@
 
 <script>
 import bpmnModeler from "workflow-bpmn-modeler";
+import { httpAction, getAction } from '@/api/manage'
 
 export default {
   components: {
@@ -21,6 +22,11 @@ export default {
   },
   data() {
     return {
+      submitLoading: false,
+      url: {
+        createanddeployment:'/activiti/models/createanddeployment',
+      },
+      deployment: {},
       xml: "", // Query the xml
       users: [
         { name: "The Beatles", id: "1" },
@@ -43,7 +49,7 @@ export default {
   },
   methods: {
     getModelDetail() {
-      fetch('https://cdn.jsdelivr.net/gh/goldsubmarine/workflow-bpmn-modeler@master/src/Leave.bpmn20.xml')
+      fetch('https://cdn.jsdelivr.net/gh/dong-jianbin/flow-pro/ant-design-vue-jeecg/src/assets/Leave.bpmn20.xml')
         .then(response => {
           return response.text()
         }).then(xml => {
@@ -52,6 +58,24 @@ export default {
     },
     save(data) {
       console.log(data);  // { process: {...}, xml: '...', svg: '...' }
+
+      this.submitLoading = true;
+      this.deployment.category = data.process.category
+      this.deployment.processKey = data.process.id
+      this.deployment.processName = data.process.name
+      this.deployment.processDescription = data.process.name + data.process.id
+      this.deployment.xml = data.xml
+      this.deployment.svg = data.svg
+
+      httpAction(this.url.createanddeployment,this.deployment,'post').then(res => {
+        if (res.success) {
+          this.$message.success("操作成功");
+          this.modalCancelVisible = false;
+        }else {
+          this.$message.error(res.message);
+        }
+      }).finally(()=>this.submitLoading = false);
+
     },
   },
 };

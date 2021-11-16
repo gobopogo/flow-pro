@@ -39,12 +39,12 @@
       <Flowable  
         ref="processDesign"
         v-show="activeStep === 'processDesign'" />
-      <!-- <Process  
-        ref="processDesign"
+      <Process  
+        ref="processDesignFloable"
         :conf="mockData.processData"
-        tabName="processDesign" 
-        v-show="activeStep === 'processDesign'" 
-        @startNodeChange="onStartChange"/> -->
+        tabName="processDesignFloable" 
+        v-show="activeStep === 'processDesignFloable'" 
+        @startNodeChange="onStartChange"/>
 
       <AdvancedSetting
         ref="advancedSetting"
@@ -92,6 +92,7 @@ export default {
         { label: "基础设置", key: "basicSetting" },
         { label: "表单设计", key: "formDesign" },
         { label: "流程设计", key: "processDesign" },
+        { label: "流程设计flowable", key: "processDesignFloable" },
         { label: "高级设置", key: "advancedSetting" }
       ]
     };

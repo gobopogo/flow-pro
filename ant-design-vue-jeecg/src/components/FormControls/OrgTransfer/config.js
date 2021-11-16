@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-prototype-builtins */
-import { GET_DEPT_ROOT, GET_DEPT_TREE, GET_USER_BY_DEPT, GET_PAGE_EMPLOYEE } from '@/api'
+// import { GET_DEPT_ROOT, GET_DEPT_TREE, GET_USER_BY_DEPT, GET_PAGE_EMPLOYEE } from '@/api'
 
 const toHump = name => name.replace( /\_(\w)/g, function ( all, letter ) {
   return letter.toUpperCase()
