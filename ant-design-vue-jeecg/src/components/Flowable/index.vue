@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import bpmnModeler from "workflow-bpmn-modeler";
+import bpmnModeler from './package/index'
 import { httpAction, getAction } from '@/api/manage'
 
 export default {
@@ -29,19 +29,19 @@ export default {
       deployment: {},
       xml: "", // Query the xml
       users: [
-        { name: "The Beatles", id: "1" },
-        { name: "The Rolling Stones", id: "2" },
-        { name: "Pink Floyed", id: "3" },
+        { name: '张三', id: 'zhangsan' },
+        { name: '李四', id: 'lisi' },
+        { name: '王五', id: 'wangwu' }
       ],
       groups: [
-        { name: "Folk Music", id: "4" },
-        { name: "Rock Music", id: "5" },
-        { name: "Classical Music", id: "6" },
+        { name: 'web组', id: 'web' },
+        { name: 'java组', id: 'java' },
+        { name: 'python组', id: 'python' }
       ],
       categorys: [
-        { name: "Music", id: "7" },
-        { name: "Articles", id: "8" },
-      ],
+        { name: 'OA', id: 'oa' },
+        { name: '财务', id: 'finance' }
+      ]
     };
   },
   mounted() {
@@ -76,6 +76,21 @@ export default {
         }
       }).finally(()=>this.submitLoading = false);
 
+    },
+    // 给父级页面提供得获取本页数据得方法
+    getData() {
+      this.$refs.refNode.save()
+      return new Promise((resolve, reject) => {
+        // this.$refs['elForm'].validate(valid => {
+        //   if (!valid) {
+        //     reject({ target: this.tabName})
+        //     return
+        //   }
+        //   this.formData.flowImg = this.activeIcon
+        //   resolve({ formData: this.formData, target: this.tabName})  // TODO 提交表单
+        // })
+        resolve({ formData: this.deployment, target: "processDesign"})  // TODO 提交表单
+      })
     },
   },
 };

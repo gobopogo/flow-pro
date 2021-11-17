@@ -8,18 +8,12 @@
       </el-form-item>
       <el-form-item label="选择分组" prop="flowGroup">
         <el-select v-model="formData.flowGroup" placeholder="请选择选择分组" clearable :style="{width: '100%'}">
-          <el-option v-for="(item, index) in flowGroupOptions" :key="index" :label="item.label"
+          <el-option v-for="(item, index) in flowGroupOptions" :key="index" :label="item.text"
             :value="item.value" :disabled="item.disabled"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="谁可以发起审批" prop="approver">
-        <fc-org-select
-          ref="org-select"
-          v-model="formData.initiator" 
-          :tabList="['dep&user']" 
-          title="发起人" 
-          @change="emitInitiator" />
-          <span style="font-size: 12px; color: #aaa;">默认所有人</span>
+          <j-select-role  v-model="formData.initiator" placeholder="不选择则所有人可用" v-decorator="[ 'roles', {initialValue:formData.initiator, rules: []}]"/>
       </el-form-item>
       <el-form-item label="模板图标" prop="icon">
         <img :src="activeIconSrc" style="width: 28px;height: 28px;vertical-align: middle;">
@@ -48,8 +42,10 @@
   </div>
 </template>
 <script>
+import {ajaxGetDictItems} from '@/api/api'
+import JSelectRole from '@/components/jeecgbiz/JSelectRole'
 export default {
-  components: {},
+  components: {JSelectRole},
   props: ['tabName', 'initiator', 'conf'],
   data() {
     const req = require.context( '@/assets/approverIcon', false, /\.png$/ )
@@ -78,28 +74,7 @@ export default {
         }],
       },
       iconList,
-      flowGroupOptions: [{
-        "label": "假勤管理",
-        "value": 1
-      }, {
-        "label": "人事管理",
-        "value": 2
-      }, {
-        "label": "财务管理",
-        "value": 3
-      }, {
-        "label": "业务管理",
-        "value": 4
-      }, {
-        "label": "行政管理",
-        "value": 5
-      }, {
-        "label": "法务管理",
-        "value": 6
-      }, {
-        "label": "其他",
-        "value": 7
-      }],
+      flowGroupOptions: [],
     }
   },
   computed: {
@@ -112,6 +87,13 @@ export default {
     if (typeof this.conf === 'object' && this.conf !== null) {
       Object.assign(this.formData, this.conf)
     }
+    
+    //根据字典Code, 初始化字典数组
+    ajaxGetDictItems('bpm_process_type', null).then((res) => {
+      if (res.success) {
+        this.flowGroupOptions = res.result;
+      }
+    })
   },
   methods: {
     emitInitiator(){

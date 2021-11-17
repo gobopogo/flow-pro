@@ -50,7 +50,8 @@
     "vxe-table-plugin-antd": "1.8.10",
     "webrtc-adapter": "^7.6.0",
     "xe-utils": "2.4.8",
-    "workflow-bpmn-modeler": "^0.2.8"
+    "bpmn-js": "^7.2.1",
+    "xcrud": "0.4.1"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.2.5",

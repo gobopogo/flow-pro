@@ -25,7 +25,7 @@
     <section class="page__content">
       <BasicSetting
         ref="basicSetting" 
-        :conf="mockData.basicSetting"
+        :conf=null
         v-show="activeStep === 'basicSetting'" 
         tabName="basicSetting"
         @initiatorChange="onInitiatorChange" /> 
@@ -39,7 +39,7 @@
       <Flowable  
         ref="processDesign"
         v-show="activeStep === 'processDesign'" />
-      <Process  
+      <!-- <Process  
         ref="processDesignFloable"
         :conf="mockData.processData"
         tabName="processDesignFloable" 
@@ -49,7 +49,7 @@
       <AdvancedSetting
         ref="advancedSetting"
         :conf="mockData.advancedSetting"
-        v-show="activeStep === 'advancedSetting'" />
+        v-show="activeStep === 'advancedSetting'" /> -->
 
     </section>
     <div class="github">
@@ -91,9 +91,9 @@ export default {
       steps: [
         { label: "基础设置", key: "basicSetting" },
         { label: "表单设计", key: "formDesign" },
-        { label: "流程设计", key: "processDesign" },
-        { label: "流程设计flowable", key: "processDesignFloable" },
-        { label: "高级设置", key: "advancedSetting" }
+        { label: "流程设计", key: "processDesign" }
+        // { label: "流程设计flowable", key: "processDesignFloable" },
+        // { label: "高级设置", key: "advancedSetting" }
       ]
     };
   },
@@ -126,8 +126,8 @@ export default {
         const param = {
           basicSetting: res[0].formData,
           processData: res[2].formData,
-          formData: res[1].formData,
-          advancedSetting: getCmpData('advancedSetting')
+          formData: res[1].formData
+          // advancedSetting: getCmpData('advancedSetting')
         }
         this.sendToServer(param)
       })
