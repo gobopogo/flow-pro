@@ -81,7 +81,12 @@ export default {
     activeIconSrc(){
       const icon = this.iconList.find(t => t.id === this.activeIcon)
       return icon ? icon.src : ''
-    }
+    },
+
+    flowGroupName(){
+      const flowGroup = this.flowGroupOptions.find(t => t.value === this.formData.flowGroup)
+      return flowGroup ? flowGroup.text : ''
+    } 
   },
   created() {
     if (typeof this.conf === 'object' && this.conf !== null) {

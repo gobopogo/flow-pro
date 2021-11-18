@@ -70,6 +70,7 @@ import DynamicForm from "@/components/DynamicForm";
 import BasicSetting from '@/components/BasicSetting'
 import AdvancedSetting from '@/components/AdvancedSetting'
 import MockData from './mockData.js'
+import {mapMutations} from 'vuex'
 const beforeUnload = function (e) {
   var confirmationMessage = '离开网站可能会丢失您编辑得内容';
   (e || window.event).returnValue = confirmationMessage;     // Gecko and Trident
@@ -111,8 +112,14 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setBaseInfo']),
     changeSteps(item) {
       this.activeStep = item.key;
+      if (this.activeStep === 'processDesign') {
+         let basic = this.$refs.basicSetting.formData
+         basic.flowGroupName = this.$refs.basicSetting.flowGroupName
+         this.setBaseInfo(basic)
+      }
     },
     publish() {
       const getCmpData = name => this.$refs[name].getData()

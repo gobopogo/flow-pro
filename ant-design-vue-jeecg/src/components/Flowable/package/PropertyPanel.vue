@@ -59,7 +59,7 @@ export default {
   },
   computed: {
     getComponent() {
-      const type = this.element.type
+      const type = this.element?.type
       if (['bpmn:IntermediateThrowEvent', 'bpmn:StartEvent', 'bpmn:EndEvent'].includes(type)) {
         return 'startEndPanel'
       }
@@ -96,7 +96,7 @@ export default {
     nodeName() {
       if (this.element) {
         const bizObj = this.element.businessObject
-        const type = bizObj.eventDefinitions
+        const type = bizObj?.eventDefinitions
           ? bizObj.eventDefinitions[0].$type
           : bizObj.$type
         return NodeName[type] || type

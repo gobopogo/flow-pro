@@ -12,7 +12,7 @@ export default {
   },
   methods: {
     computedExecutionListenerLength() {
-      this.executionListenerLength = this.element.businessObject.extensionElements.values.length || 0
+      this.executionListenerLength = this.element.businessObject.extensionElements?.values?.length ?? 0
     },
     finishExecutionListener() {
       if (this.dialogName === 'executionListenerDialog') {

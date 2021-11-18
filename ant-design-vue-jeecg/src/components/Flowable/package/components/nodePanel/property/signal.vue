@@ -89,7 +89,7 @@ export default {
   },
   methods: {
     updateElement() {
-      if (this.formData.signal.length) {
+      if (this.formData.signal?.length) {
         let extensionElements = this.element.businessObject.get('extensionElements')
         if (!extensionElements) {
           extensionElements = this.modeler.get('moddle').create('bpmn:signal')
@@ -103,7 +103,7 @@ export default {
       } else {
         const extensionElements = this.element.businessObject[`extensionElements`]
         if (extensionElements) {
-          extensionElements.values = extensionElements.values.filter(item => item.$type !== 'flowable:ExecutionListener')
+          extensionElements.values = extensionElements.values?.filter(item => item.$type !== 'flowable:ExecutionListener')
         }
       }
     },

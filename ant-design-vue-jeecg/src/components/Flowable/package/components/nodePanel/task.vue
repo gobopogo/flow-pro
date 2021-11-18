@@ -264,14 +264,14 @@ export default {
         delete this.element.businessObject.$attrs[`flowable:candidateUsers`]
         return
       }
-      this.updateProperties({ 'flowable:candidateUsers': val.join(',') })
+      this.updateProperties({ 'flowable:candidateUsers': val?.join(',') })
     },
     'formData.candidateGroups': function(val) {
       if (this.formData.userType !== 'candidateGroups') {
         delete this.element.businessObject.$attrs[`flowable:candidateGroups`]
         return
       }
-      this.updateProperties({ 'flowable:candidateGroups': val.join(',') })
+      this.updateProperties({ 'flowable:candidateGroups': val?.join(',') })
     },
     'formData.async': function(val) {
       if (val === '') val = null
@@ -330,18 +330,18 @@ export default {
     let cache = commonParse(this.element)
     cache = userTaskParse(cache)
     this.formData = cache
-    this.computedExecutionListenerLength()
-    this.computedTaskListenerLength()
+    // this.computedExecutionListenerLength()
+    // this.computedTaskListenerLength()
     this.computedHasMultiInstance()
   },
   methods: {
     computedExecutionListenerLength() {
-      this.executionListenerLength = this.element.businessObject.extensionElements.values
-        .filter(item => item.$type === 'flowable:ExecutionListener').length || 0
+      this.executionListenerLength = this.element.businessObject.extensionElements?.values
+        ?.filter(item => item.$type === 'flowable:ExecutionListener').length ?? 0
     },
     computedTaskListenerLength() {
-      this.taskListenerLength = this.element.businessObject.extensionElements.values
-        .filter(item => item.$type === 'flowable:TaskListener').length || 0
+      this.taskListenerLength = this.element.businessObject.extensionElements?.values
+        ?.filter(item => item.$type === 'flowable:TaskListener').length ?? 0
     },
     computedHasMultiInstance() {
       if (this.element.businessObject.loopCharacteristics) {

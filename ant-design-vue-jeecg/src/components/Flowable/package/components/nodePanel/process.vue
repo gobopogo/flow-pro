@@ -50,10 +50,10 @@ export default {
         inline: false,
         item: [
           {
-            xType: 'select',
+            xType: 'input',
             name: 'processCategory',
             label: '流程分类',
-            dic: { data: _this.categorys, label: 'name', value: 'id' }
+            rules: [{ required: true, message: 'processCategory 不能为空' }]
           },
           {
             xType: 'input',
@@ -93,10 +93,15 @@ export default {
   },
   created() {
     this.formData = commonParse(this.element)
+    let baseInfo = this.$store.state.flowable.baseInfo
+    this.formData.processCategory = baseInfo.flowGroupName
+    this.formData.id = baseInfo.flowName
+    this.formData.name = baseInfo.flowName
+    this.formData.documentation = baseInfo.flowRemark
   },
   methods: {
     computedSignalLength() {
-      this.signalLength = this.element.businessObject.extensionElements.values.length || 0
+      this.signalLength = this.element.businessObject.extensionElements?.values?.length ?? 0
     },
     finishSignal() {
       if (this.dialogName === 'signalDialog') {

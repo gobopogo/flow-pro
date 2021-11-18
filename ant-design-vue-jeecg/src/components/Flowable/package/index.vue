@@ -57,7 +57,6 @@ import BpmData from './BpmData'
 import getInitStr from './flowable/init'
 // 引入flowable的节点文件
 import flowableModdle from './flowable/flowable.json'
-
 export default {
   name: 'WorkflowBpmnModeler',
   components: {
@@ -166,7 +165,6 @@ export default {
       try {
         // 获取 bpmn 设计器实例
         const canvas = this.$refs.canvas
-                    console.log(canvas);
         const djsPalette = canvas.children[0].children[1].children[4]
         const djsPalStyle = {
           width: '130px',
@@ -223,7 +221,7 @@ export default {
           const endTask = this.taskList[this.taskList.length - 1]
           if (completeTask) {
             canvas.addMarker(n.id, completeTask.completed ? 'highlight' : 'highlight-todo')
-            n.outgoing.forEach(nn => {
+            n.outgoing?.forEach(nn => {
               const targetTask = this.taskList.find(m => m.key === nn.targetRef.id)
               if (targetTask) {
                 canvas.addMarker(nn.id, targetTask.completed ? 'highlight' : 'highlight-todo')

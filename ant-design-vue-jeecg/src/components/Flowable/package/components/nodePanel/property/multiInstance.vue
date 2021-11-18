@@ -79,8 +79,8 @@ export default {
     }
   },
   mounted() {
-    const cache = JSON.parse(JSON.stringify(this.element.businessObject.loopCharacteristics || {}))
-    cache.completionCondition = cache.completionCondition.body
+    const cache = JSON.parse(JSON.stringify(this.element.businessObject.loopCharacteristics ?? {}))
+    cache.completionCondition = cache.completionCondition?.body
     this.formData = formatJsonKeyValue(cache)
   },
   methods: {

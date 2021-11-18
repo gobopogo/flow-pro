@@ -45,7 +45,7 @@ export default {
     };
   },
   mounted() {
-    this.getModelDetail()
+    // this.getModelDetail()
   },
   methods: {
     getModelDetail() {
@@ -57,24 +57,24 @@ export default {
       })
     },
     save(data) {
-      console.log(data);  // { process: {...}, xml: '...', svg: '...' }
+      // console.log(data);  // { process: {...}, xml: '...', svg: '...' }
 
       this.submitLoading = true;
-      this.deployment.category = data.process.category
-      this.deployment.processKey = data.process.id
-      this.deployment.processName = data.process.name
-      this.deployment.processDescription = data.process.name + data.process.id
+      // this.deployment.category = data.process.category
+      // this.deployment.processKey = data.process.id
+      // this.deployment.processName = data.process.name
+      // this.deployment.processDescription = data.process.name + data.process.id
       this.deployment.xml = data.xml
       this.deployment.svg = data.svg
 
-      httpAction(this.url.createanddeployment,this.deployment,'post').then(res => {
-        if (res.success) {
-          this.$message.success("操作成功");
-          this.modalCancelVisible = false;
-        }else {
-          this.$message.error(res.message);
-        }
-      }).finally(()=>this.submitLoading = false);
+      // httpAction(this.url.createanddeployment,this.deployment,'post').then(res => {
+      //   if (res.success) {
+      //     this.$message.success("操作成功");
+      //     this.modalCancelVisible = false;
+      //   }else {
+      //     this.$message.error(res.message);
+      //   }
+      // }).finally(()=>this.submitLoading = false);
 
     },
     // 给父级页面提供得获取本页数据得方法

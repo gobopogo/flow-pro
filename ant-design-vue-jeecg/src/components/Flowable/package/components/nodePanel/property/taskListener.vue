@@ -105,7 +105,7 @@ export default {
     }
   },
   mounted() {
-    this.formData.taskListener = this.element.businessObject.extensionElements.values
+    this.formData.taskListener = this.element.businessObject.extensionElements?.values
       .filter(item => item.$type === 'flowable:TaskListener')
       .map(item => {
         let type
@@ -116,7 +116,7 @@ export default {
           event: item.event,
           type: type,
           className: item[type],
-          params: item.fields.map(field => {
+          params: item.fields?.map(field => {
             let fieldType
             if ('stringValue' in field) fieldType = 'stringValue'
             if ('expression' in field) fieldType = 'expression'
@@ -125,9 +125,9 @@ export default {
               type: fieldType,
               value: field[fieldType]
             }
-          }) || []
+          }) ?? []
         }
-      }) || []
+      }) ?? []
   },
   methods: {
     configParam(index) {
@@ -147,13 +147,13 @@ export default {
       this.nowIndex = null
     },
     updateElement() {
-      if (this.formData.taskListener.length) {
+      if (this.formData.taskListener?.length) {
         let extensionElements = this.element.businessObject.get('extensionElements')
         if (!extensionElements) {
           extensionElements = this.modeler.get('moddle').create('bpmn:ExtensionElements')
         }
         // 清除旧值
-        extensionElements.values = extensionElements.values.filter(item => item.$type !== 'flowable:TaskListener') || []
+        extensionElements.values = extensionElements.values?.filter(item => item.$type !== 'flowable:TaskListener') ?? []
         this.formData.taskListener.forEach(item => {
           const taskListener = this.modeler.get('moddle').create('flowable:TaskListener')
           taskListener['event'] = item.event
@@ -175,7 +175,7 @@ export default {
       } else {
         const extensionElements = this.element.businessObject[`extensionElements`]
         if (extensionElements) {
-          extensionElements.values = extensionElements.values.filter(item => item.$type !== 'flowable:TaskListener') || []
+          extensionElements.values = extensionElements.values?.filter(item => item.$type !== 'flowable:TaskListener') ?? []
         }
       }
     },

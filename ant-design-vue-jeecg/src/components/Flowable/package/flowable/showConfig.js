@@ -16,6 +16,18 @@ export default {
     dueDate: true,
     taskListener: true
   },
+  'bpmn:Task': {
+    userType: true,
+    assignee: true,
+    candidateUsers: true,
+    candidateGroups: true,
+    async: true,
+    priority: true,
+    formKey: true,
+    skipExpression: true,
+    dueDate: true,
+    taskListener: true
+  },
   'bpmn:ServiceTask': {
     async: true,
     skipExpression: true,
