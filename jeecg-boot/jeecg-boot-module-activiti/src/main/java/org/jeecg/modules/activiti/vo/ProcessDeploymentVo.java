@@ -29,6 +29,11 @@ public class ProcessDeploymentVo {
     private String processDescription;
 
     /**
+     * 权限
+     */
+    private String initiator;
+
+    /**
      * 流程定义内容
      */
     private String xml;
@@ -37,5 +42,10 @@ public class ProcessDeploymentVo {
      * 流程定义svg
      */
     private String svg;
+
+    /**
+     * 节点指派人列表
+     */
+    private ProcessAsignNodeVo[]  asignNodeList;
 
 }

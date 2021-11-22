@@ -22,7 +22,6 @@ export default {
   },
   data() {
     return {
-      submitLoading: false,
       url: {
         createanddeployment:'/activiti/models/createanddeployment',
       },
@@ -58,23 +57,27 @@ export default {
     },
     save(data) {
       // console.log(data);  // { process: {...}, xml: '...', svg: '...' }
+      let asignNodeList = this.$store.state.flowable.asignNodeList
+      this.deployment.asignNodeList = asignNodeList
 
-      this.submitLoading = true;
-      // this.deployment.category = data.process.category
-      // this.deployment.processKey = data.process.id
-      // this.deployment.processName = data.process.name
-      // this.deployment.processDescription = data.process.name + data.process.id
+      let baseInfo = this.$store.state.flowable.baseInfo
+      this.deployment.category = baseInfo.flowGroupName
+      this.deployment.processKey = baseInfo.flowName
+      this.deployment.processName = baseInfo.flowName
+      this.deployment.processDescription = baseInfo.flowRemark
+      this.deployment.initiator = baseInfo.initiator
+
       this.deployment.xml = data.xml
       this.deployment.svg = data.svg
 
-      // httpAction(this.url.createanddeployment,this.deployment,'post').then(res => {
-      //   if (res.success) {
-      //     this.$message.success("操作成功");
-      //     this.modalCancelVisible = false;
-      //   }else {
-      //     this.$message.error(res.message);
-      //   }
-      // }).finally(()=>this.submitLoading = false);
+      httpAction(this.url.createanddeployment,this.deployment,'post').then(res => {
+        if (res.success) {
+          this.$message.success("操作成功");
+          this.modalCancelVisible = false;
+        }else {
+          this.$message.error(res.message);
+        }
+      }).finally(console.log("模型创建完成"));
 
     },
     // 给父级页面提供得获取本页数据得方法

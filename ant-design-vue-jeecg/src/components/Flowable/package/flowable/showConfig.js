@@ -5,28 +5,28 @@ export default {
     formKey: true
   },
   'bpmn:UserTask': {
-    userType: true,
-    assignee: true,
-    candidateUsers: true,
-    candidateGroups: true,
+    userType: false,
+    assignee: false,
+    candidateUsers: false,
+    candidateGroups: false,
     async: true,
     priority: true,
-    formKey: true,
-    skipExpression: true,
-    dueDate: true,
-    taskListener: true
+    formKey: false,
+    skipExpression: false,
+    dueDate: false,
+    taskListener: false
   },
   'bpmn:Task': {
-    userType: true,
-    assignee: true,
-    candidateUsers: true,
-    candidateGroups: true,
+    userType: false,
+    assignee: false,
+    candidateUsers: false,
+    candidateGroups: false,
     async: true,
     priority: true,
-    formKey: true,
-    skipExpression: true,
-    dueDate: true,
-    taskListener: true
+    formKey: false,
+    skipExpression: false,
+    dueDate: false,
+    taskListener: false
   },
   'bpmn:ServiceTask': {
     async: true,

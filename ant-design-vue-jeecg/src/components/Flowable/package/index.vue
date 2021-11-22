@@ -29,9 +29,9 @@
             </el-tooltip>
           </div>
           <div>
-            <el-button size="mini" icon="el-icon-download" @click="saveXML(true)">下载xml</el-button>
+            <!-- <el-button size="mini" icon="el-icon-download" @click="saveXML(true)">下载xml</el-button>
             <el-button size="mini" icon="el-icon-picture" @click="saveImg('svg', true)">下载svg</el-button>
-            <el-button size="mini" type="primary" @click="save">保存模型</el-button>
+            <el-button size="mini" type="primary" @click="save">保存模型</el-button> -->
           </div>
         </div>
       </el-header>

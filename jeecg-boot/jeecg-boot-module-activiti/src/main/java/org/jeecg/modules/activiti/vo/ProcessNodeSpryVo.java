@@ -4,32 +4,44 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/**
+ * 节点派发详细信息
+ *
+ * @author dongjb
+ * @date 2021/11/22
+ */
+
 @Getter
 @Setter
 @ToString
-public class ProcessAsignNodeVo {
+public class ProcessNodeSpryVo {
     /**
-     * 流程节点标识
+     * 1用户
      */
-    private String nodeId;
-
+    private String userIds;
     /**
-     * 流程定义key
+     * 0角色
      */
-    private spry spry;
+    private String roleIds;
+    /**
+     * 5部门负责人
+     */
+    private String departmentIds;
+    /**
+     * 4发起人的部门负责人
+     */
+    private String departmentManageIds;
+    /**
+     * 6窗口变量
+     */
+    private String formVariables;
+    /**
+     * 3是否选中发起人
+     */
+    private Boolean chooseSponsor;
+    /**
+     * 4是否选中发起人的部门领导
+     */
+    private Boolean chooseDepHeader;
 
 }
-
-      asignNode: {
-              nodeId: '',
-              spry: {
-              //选中的用户
-              userIds: '',
-              roleIds: '',
-              departmentIds: '',
-              departmentManageIds: '',
-              formVariables: '',
-              chooseSponsor: false,
-              chooseDepHeader: false
-              },
-              },

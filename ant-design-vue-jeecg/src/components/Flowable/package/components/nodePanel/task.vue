@@ -35,6 +35,68 @@
       :modeler="modeler"
       @close="finishMultiInstance"
     />
+    <a-form :form="nodeForm" class="aprove" >
+      <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="人员类型">
+        <a-radio-group @change="spryType" v-model="spryTypes" >
+            <!-- 0角色 1用户 2部门 3发起人 4发起人的部门负责人-->
+          <a-radio value="0"> 根据角色选择 </a-radio>
+          <br/>
+          <a-radio value="1"> 直接选择人员 </a-radio>
+          <br/>
+          <a-radio value="2"> 部门 </a-radio>
+          <br/>
+          <a-radio value="5"> 部门负责人 </a-radio>
+          <br/>
+          <a-radio value="3">
+            发起人
+            <a-tooltip placement="topLeft" title="自动获取发起人">
+              <a-icon type="exclamation-circle" />
+            </a-tooltip>
+          </a-radio>
+          <br/>
+          <a-radio value="4">
+            发起人的部门负责人
+            <a-tooltip placement="topLeft" title="自动获取发起人所在部门的负责人，即其上级领导。（如果其本身就是部门负责人，则指向发起人自己。）">
+              <a-icon type="exclamation-circle" />
+            </a-tooltip>
+          </a-radio>
+          <br/>
+          <a-radio value="6">
+            表单变量
+            <a-tooltip placement="topLeft" title="填写与表单中相对应的变量，role:角色，user:人员：dept:部门：deptManage:部门负责人; 例如：variable:role,variable2:user;">
+              <a-icon type="exclamation-circle" />
+            </a-tooltip>
+          </a-radio>
+        </a-radio-group>
+      </a-form-item>
+
+      <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="选择角色" v-if="spryTypes ==='0'">
+        <j-select-role v-model="asignNode.spry.roleIds" />
+      </a-form-item>
+      <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="选择人员" v-if="spryTypes ==='1'">
+        <!--  通过部门选择用户控件 -->
+        <j-select-user-by-dep v-model="asignNode.spry.userIds" :multi="true"></j-select-user-by-dep>
+      </a-form-item>
+      <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="选择部门" v-if="spryTypes ==='2'">
+        <j-select-depart v-model="asignNode.spry.departmentIds" :multi="true"></j-select-depart>
+      </a-form-item>
+      <a-form-item
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+        label="选择部门负责人"
+        v-if="spryTypes === '5'"
+      >
+        <j-select-depart v-model="asignNode.spry.departmentManageIds" :multi="true"></j-select-depart>
+      </a-form-item>
+      <a-form-item
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+        label="输入表单变量"
+        v-if="spryTypes === '6'"
+      >
+        <a-input v-model="asignNode.spry.formVariables" :multi="true"></a-input>
+      </a-form-item>
+    </a-form>
   </div>
 </template>
 
@@ -44,6 +106,7 @@ import executionListenerDialog from './property/executionListener'
 import taskListenerDialog from './property/taskListener'
 import multiInstanceDialog from './property/multiInstance'
 import { commonParse, userTaskParse } from '../../common/parseElement'
+import {mapMutations} from 'vuex'
 export default {
   components: {
     executionListenerDialog,
@@ -72,7 +135,31 @@ export default {
       executionListenerLength: 0,
       taskListenerLength: 0,
       hasMultiInstance: false,
-      formData: {}
+      formData: {},
+      asignNode: {
+        nodeId: '',
+        spry: {
+          //选中的用户
+          userIds: '',
+          roleIds: '',
+          departmentIds: '',
+          departmentManageIds: '',
+          formVariables: '',
+          chooseSponsor: false,
+          chooseDepHeader: false
+        },
+      },
+      spryTypes: '1',
+      nodeForm: this.$form.createForm(this),
+      // 表头
+      labelCol: {
+        xs: { span: 8 },
+        sm: { span: 8 },
+      },
+      wrapperCol: {
+        xs: { span: 16 },
+        sm: { span: 16 },
+      },
     }
   },
   computed: {
@@ -102,12 +189,12 @@ export default {
           //   name: 'executionListener',
           //   label: '执行监听器'
           // },
-          // {
-          //   xType: 'slot',
-          //   name: 'taskListener',
-          //   label: '任务监听器',
-          //   show: !!_this.showConfig.taskListener
-          // },
+          {
+            xType: 'slot',
+            name: 'taskListener',
+            label: '任务监听器',
+            show: !!_this.showConfig.taskListener
+          },
           {
             xType: 'select',
             name: 'userType',
@@ -243,36 +330,36 @@ export default {
     }
   },
   watch: {
-    'formData.userType': function(val, oldVal) {
-      if (oldVal) {
-        const types = ['assignee', 'candidateUsers', 'candidateGroups']
-        types.forEach(type => {
-          delete this.element.businessObject.$attrs[`flowable:${type}`]
-          delete this.formData[type]
-        })
-      }
-    },
-    'formData.assignee': function(val) {
-      if (this.formData.userType !== 'assignee') {
-        delete this.element.businessObject.$attrs[`flowable:assignee`]
-        return
-      }
-      this.updateProperties({ 'flowable:assignee': val })
-    },
-    'formData.candidateUsers': function(val) {
-      if (this.formData.userType !== 'candidateUsers') {
-        delete this.element.businessObject.$attrs[`flowable:candidateUsers`]
-        return
-      }
-      this.updateProperties({ 'flowable:candidateUsers': val?.join(',') })
-    },
-    'formData.candidateGroups': function(val) {
-      if (this.formData.userType !== 'candidateGroups') {
-        delete this.element.businessObject.$attrs[`flowable:candidateGroups`]
-        return
-      }
-      this.updateProperties({ 'flowable:candidateGroups': val?.join(',') })
-    },
+    // 'formData.userType': function(val, oldVal) {
+    //   if (oldVal) {
+    //     const types = ['assignee', 'candidateUsers', 'candidateGroups']
+    //     types.forEach(type => {
+    //       delete this.element.businessObject.$attrs[`flowable:${type}`]
+    //       delete this.formData[type]
+    //     })
+    //   }
+    // },
+    // 'formData.assignee': function(val) {
+    //   if (this.formData.userType !== 'assignee') {
+    //     delete this.element.businessObject.$attrs[`flowable:assignee`]
+    //     return
+    //   }
+    //   this.updateProperties({ 'flowable:assignee': val })
+    // },
+    // 'formData.candidateUsers': function(val) {
+    //   if (this.formData.userType !== 'candidateUsers') {
+    //     delete this.element.businessObject.$attrs[`flowable:candidateUsers`]
+    //     return
+    //   }
+    //   this.updateProperties({ 'flowable:candidateUsers': val?.join(',') })
+    // },
+    // 'formData.candidateGroups': function(val) {
+    //   if (this.formData.userType !== 'candidateGroups') {
+    //     delete this.element.businessObject.$attrs[`flowable:candidateGroups`]
+    //     return
+    //   }
+    //   this.updateProperties({ 'flowable:candidateGroups': val?.join(',') })
+    // },
     'formData.async': function(val) {
       if (val === '') val = null
       this.updateProperties({ 'flowable:async': true })
@@ -324,24 +411,117 @@ export default {
     'formData.resultVariable': function(val) {
       if (val === '') val = null
       this.updateProperties({ 'flowable:resultVariable': val })
-    }
+    },
+    'asignNode.spry.userIds': function(val) {
+      if (val === '') val = null
+      this.updateProperties({ 'flowable:candidateUsers': 'userIds|' + val })
+      this.delAsignNode(this.formData.id)
+      this.asignNode.nodeId = this.formData.id
+      this.addAsignNode(this.asignNode)
+    },
+    'asignNode.spry.roleIds': function(val) {
+      if (val === '') val = null
+      this.updateProperties({ 'flowable:candidateUsers': 'roleIds|' + val })
+      this.delAsignNode(this.formData.id)
+      this.asignNode.nodeId = this.formData.id
+      this.addAsignNode(this.asignNode)
+      
+    },
+    'asignNode.spry.departmentIds': function(val) {
+      if (val === '') val = null
+      this.updateProperties({ 'flowable:candidateUsers': 'departmentIds|' + val })
+      this.delAsignNode(this.formData.id)
+      this.asignNode.nodeId = this.formData.id
+      this.addAsignNode(this.asignNode)
+    },
+    'asignNode.spry.departmentManageIds': function(val) {
+      if (val === '') val = null
+      this.updateProperties({ 'flowable:candidateUsers': 'departmentManageIds|' + val })
+      this.delAsignNode(this.formData.id)
+      this.asignNode.nodeId = this.formData.id
+      this.addAsignNode(this.asignNode)
+    },
+    'asignNode.spry.formVariables': function(val) {
+      if (val === '') val = null
+      this.updateProperties({ 'flowable:candidateUsers': 'formVariables|' + val })
+      this.delAsignNode(this.formData.id)
+      this.asignNode.nodeId = this.formData.id
+      this.addAsignNode(this.asignNode)
+    },
+    'asignNode.spry.chooseSponsor': function(val) {
+      if (val) {
+        this.updateProperties({ 'flowable:candidateUsers': 'chooseSponsor|'})
+        this.delAsignNode(this.formData.id)
+        this.asignNode.nodeId = this.formData.id
+        this.addAsignNode(this.asignNode)
+      }
+    },
+    'asignNode.spry.chooseDepHeader': function(val) {
+      if (val) {
+        this.updateProperties({ 'flowable:candidateUsers': 'chooseDepHeader|'})
+        this.delAsignNode(this.formData.id)
+        this.asignNode.nodeId = this.formData.id
+        this.addAsignNode(this.asignNode)
+      }
+    },
+  
   },
   created() {
     let cache = commonParse(this.element)
     cache = userTaskParse(cache)
     this.formData = cache
+
+    for (const key in cache) {
+      if (key === 'candidateUsers') {
+        let asignResult = cache[key]?.split('|') || []
+        let asignType = asignResult[0]
+        let asignValue = asignResult[1]
+        if (asignType == 'roleIds') {
+          this.asignNode.spry.roleIds = asignValue;
+          this.spryTypes = '0'
+        }
+        if (asignType == 'userIds') {
+          this.asignNode.spry.userIds = asignValue;
+          this.spryTypes = '1'
+        }
+        if (asignType == 'departmentIds') {
+          this.asignNode.spry.departmentIds = asignValue;
+          this.spryTypes = '2'
+        }
+        if (asignType == 'departmentManageIds') {
+          this.asignNode.spry.departmentManageIds = asignValue;
+          this.spryTypes = '5'
+        }
+        if (asignType == 'formVariable') {
+          this.asignNode.spry.formVariable = asignValue;
+          this.spryTypes = '6'
+        }
+        if (asignType == 'chooseSponsor') {
+          this.asignNode.spry.chooseSponsor = true;
+          this.spryTypes = '3'
+        }
+        if (asignType == 'chooseDepHeader') {
+          this.asignNode.spry.chooseDepHeader = true;
+          this.spryTypes = '4'
+        }
+      }
+    }
     // this.computedExecutionListenerLength()
     // this.computedTaskListenerLength()
     this.computedHasMultiInstance()
   },
   methods: {
+    ...mapMutations(['addAsignNode', 'delAsignNode']),
     computedExecutionListenerLength() {
-      this.executionListenerLength = this.element.businessObject.extensionElements?.values
-        ?.filter(item => item.$type === 'flowable:ExecutionListener').length ?? 0
+      this.executionListenerLength =
+        this.element.businessObject.extensionElements?.values?.filter(
+          item => item.$type === 'flowable:ExecutionListener'
+        ).length ?? 0
     },
     computedTaskListenerLength() {
-      this.taskListenerLength = this.element.businessObject.extensionElements?.values
-        ?.filter(item => item.$type === 'flowable:TaskListener').length ?? 0
+      this.taskListenerLength =
+        this.element.businessObject.extensionElements?.values?.filter(item => item.$type === 'flowable:TaskListener')
+          .length ?? 0
     },
     computedHasMultiInstance() {
       if (this.element.businessObject.loopCharacteristics) {
@@ -367,9 +547,29 @@ export default {
         this.computedHasMultiInstance()
       }
       this.dialogName = ''
-    }
+    },
+    spryType(types){
+      /* 0角色 1用户 2部门 3发起人 4发起人的部门负责人 5部门负责人*/
+      // this.spryTypes = types;
+      if (this.spryTypes.indexOf('0')==-1) this.asignNode.spry.roleIds = '';
+      if (this.spryTypes.indexOf('1')==-1) this.asignNode.spry.userIds = '';
+      if (this.spryTypes.indexOf('2')==-1) this.asignNode.spry.departmentIds = '';
+      if (this.spryTypes.indexOf('5')==-1) this.asignNode.spry.departmentManageIds = '';
+      if (this.spryTypes.indexOf('6')==-1) this.asignNode.spry.formVariable = '';
+      //是否选中发起人
+      this.asignNode.spry.chooseSponsor = this.spryTypes.indexOf('3')>-1 ;
+      //是否选中发起人的部门领导
+      this.asignNode.spry.chooseDepHeader = this.spryTypes.indexOf('4')>-1 ;
+
+      console.log("this.asignNode.spry",this.asignNode.spry)
+    },
   }
 }
 </script>
 
-<style></style>
+
+<style>
+  .aprove{
+    margin-top: 20px;
+  }
+</style>

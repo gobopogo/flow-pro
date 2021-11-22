@@ -40,8 +40,8 @@ export function conditionExpressionParse(obj) {
 export function userTaskParse(obj) {
   for (const key in obj) {
     if (key === 'candidateUsers') {
-      obj.userType = 'candidateUsers'
-      obj[key] = obj[key]?.split(',') || []
+      // obj.userType = 'candidateUsers'
+      // obj[key] = obj[key]?.split(',') || []
     } else if (key === 'candidateGroups') {
       obj.userType = 'candidateGroups'
       obj[key] = obj[key]?.split(',') || []

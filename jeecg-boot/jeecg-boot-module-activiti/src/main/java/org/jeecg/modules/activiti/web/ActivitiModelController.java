@@ -31,11 +31,9 @@ import org.jeecg.common.exception.JeecgBootException;
 import org.jeecg.modules.activiti.entity.ActZprocess;
 import org.jeecg.modules.activiti.service.IActModelService;
 import org.jeecg.modules.activiti.service.Impl.ActZprocessServiceImpl;
-import org.jeecg.modules.activiti.util.ImageUtil;
 import org.jeecg.modules.activiti.vo.ProcessDeploymentVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -298,7 +296,7 @@ public class ActivitiModelController {
             InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(deployment.getXml().getBytes()), StandardCharsets.UTF_8);
             String  modelId = iActModelService.createModel(in, deployment);
             if(!StringUtils.isEmpty(modelId)) {
-                deploy(modelId);
+                iActModelService.deployProcess(modelId, deployment);
             }
         } catch (Exception e) {
             e.printStackTrace();
