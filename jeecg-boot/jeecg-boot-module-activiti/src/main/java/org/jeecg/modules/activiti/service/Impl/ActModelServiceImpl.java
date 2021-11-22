@@ -173,7 +173,7 @@ public class ActModelServiceImpl implements IActModelService {
                     repositoryService.setProcessDefinitionCategory(pd.getId(), deploymentVo.getCategory());
                     repositoryService.setDeploymentCategory(pd.getDeploymentId(), deploymentVo.getCategory());
                 }
-                //激活流程
+                //激活流程,默认就是激活状态，不需要激活
 //                repositoryService.activateProcessDefinitionById(pd.getId(), true, new Date());
 
                 //流程业务信息
