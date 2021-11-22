@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -172,6 +173,9 @@ public class ActModelServiceImpl implements IActModelService {
                     repositoryService.setProcessDefinitionCategory(pd.getId(), deploymentVo.getCategory());
                     repositoryService.setDeploymentCategory(pd.getDeploymentId(), deploymentVo.getCategory());
                 }
+                //激活流程
+//                repositoryService.activateProcessDefinitionById(pd.getId(), true, new Date());
+
                 //流程业务信息
                 ActZprocess actZprocess = new ActZprocess();
                 actZprocess.setId(pd.getId());
@@ -183,6 +187,7 @@ public class ActModelServiceImpl implements IActModelService {
                 actZprocess.setDiagramName(pd.getDiagramResourceName());
                 actZprocess.setCategoryId(deploymentVo.getCategory());
                 actZprocess.setRoles(deploymentVo.getInitiator());
+                actZprocess.setStatus(1);
                 actZprocessService.setAllOldByProcessKey(modelData.getKey());
                 actZprocess.setLatest(true);
                 actZprocessService.save(actZprocess);

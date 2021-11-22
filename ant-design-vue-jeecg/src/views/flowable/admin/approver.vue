@@ -117,7 +117,6 @@ export default {
       this.activeStep = item.key;
       if (this.activeStep === 'processDesign') {
          let basic = this.$refs.basicSetting.formData
-         basic.flowGroupName = this.$refs.basicSetting.flowGroupName
          this.setBaseInfo(basic)
       }
     },

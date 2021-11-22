@@ -61,7 +61,7 @@ export default {
       this.deployment.asignNodeList = asignNodeList
 
       let baseInfo = this.$store.state.flowable.baseInfo
-      this.deployment.category = baseInfo.flowGroupName
+      this.deployment.category = baseInfo.flowGroup
       this.deployment.processKey = baseInfo.flowName
       this.deployment.processName = baseInfo.flowName
       this.deployment.processDescription = baseInfo.flowRemark
