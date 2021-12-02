@@ -63,9 +63,9 @@ public class ActBusinessController {
     @ApiOperation(value = "流程-流程申请", notes = "添加申请草稿状态,业务表单参数数据一并传过来！")
     @PostMapping(value = "/add")
     public Result<ActBusiness> add(@ApiParam(value = "流程定义Id", required = true) String procDefId,
-                      @ApiParam(value = "申请标题", required = true) String procDeTitle,
-                      @ApiParam(value = "数据表名", required = true) String tableName,
-                      HttpServletRequest request) {
+                                   @ApiParam(value = "申请标题", required = true) String procDeTitle,
+                                   @ApiParam(value = "数据表名", required = true) String tableName,
+                                   HttpServletRequest request) {
         /*保存业务表单数据到数据库表*/
         String tableId = IdUtil.simpleUUID();
         //如果前端上传了id
@@ -118,7 +118,7 @@ public class ActBusinessController {
         actBusiness.setTableName(tableName);
         actBusinessService.save(actBusiness);
         for (String id : tableId.split(SPLIT_FLAG)) {
-            actBusinessService.updateBusinessStatusAndId(actBusiness.getTableName(), id, "2",uuid);
+            actBusinessService.updateBusinessStatusAndId(actBusiness.getTableName(), id, "2", uuid);
         }
         return Result.OK(actBusiness);
     }
@@ -127,9 +127,9 @@ public class ActBusinessController {
     @ApiOperation(value = "流程-获取业务表单信息", notes = "获取业务表单信息")
     @RequestMapping(value = "/getForm", method = RequestMethod.GET)
     public Result<Map<String, Object>> getForm(@ApiParam(value = "业务表数据id", required = true) String tableId,
-                          @ApiParam(value = "业务表名", required = true) String tableName) {
+                                               @ApiParam(value = "业务表名", required = true) String tableName) {
         if (StrUtil.isBlank(tableName)) {
-            return Result.error("参数缺省！",null);
+            return Result.error("参数缺省！", null);
         }
         Map<String, Object> applyForm = actBusinessService.getApplyForm(tableId, tableName);
         return Result.OK(applyForm);
@@ -139,7 +139,7 @@ public class ActBusinessController {
     @ApiOperation(value = "流程-修改业务表单信息", notes = "业务表单参数数据一并传过来!")
     @RequestMapping(value = "/editForm", method = RequestMethod.POST)
     public Result<Map<String, String>> editForm(@ApiParam(value = "业务表数据id", required = true) String id,
-                           HttpServletRequest request) {
+                                                HttpServletRequest request) {
         /*保存业务表单数据到数据库表*/
         actBusinessService.saveApplyForm(id, request);
 
@@ -161,7 +161,7 @@ public class ActBusinessController {
         for (String id : ids.split(SPLIT_FLAG)) {
             ActBusiness actBusiness = actBusinessService.getById(id);
             if (!actBusiness.getStatus().equals(ActivitiConstant.STATUS_TO_APPLY)) {
-                return Result.error("删除失败, 仅能删除草稿状态的申请",null);
+                return Result.error("删除失败, 仅能删除草稿状态的申请", null);
             }
             // 删除关联业务表
             actBusinessService.deleteBusiness(actBusiness.getTableName(), actBusiness.getTableId());
@@ -175,7 +175,7 @@ public class ActBusinessController {
             }
             actBusinessService.removeById(id);
         }
-        return Result.OK("删除成功",null);
+        return Result.OK("删除成功", null);
     }
 
     @AutoLog(value = "流程-提交申请 启动流程")
@@ -184,7 +184,7 @@ public class ActBusinessController {
     public Result<String> apply(ActBusiness act) {
         ActBusiness actBusiness = actBusinessService.getById(act.getId());
         if (actBusiness == null) {
-            return Result.error("actBusiness表中该id不存在",null);
+            return Result.error("actBusiness表中该id不存在", null);
         }
         String tableId = actBusiness.getTableId();
         String tableName = actBusiness.getTableName();
@@ -250,10 +250,10 @@ public class ActBusinessController {
     @ApiOperation(value = "流程-查询申请列表 与 已办列表的合集", notes = "查询申请列表 与 已办列表的合集")
     @RequestMapping(value = "/doAndApplyList", method = RequestMethod.GET)
     public Result<List<ActDoAndApplyVo>> doAndApplyList(ActBusiness param,
-                                 String name,
-                                 String categoryId,
-                                 Integer priority,
-                                 HttpServletRequest request) {
+                                                        String name,
+                                                        String categoryId,
+                                                        Integer priority,
+                                                        HttpServletRequest request) {
         List<ActDoAndApplyVo> list = new ArrayList<>();
 
         // 查询审批列表
@@ -302,7 +302,23 @@ public class ActBusinessController {
     @AutoLog(value = "流程-获取指定业务表信息")
     @ApiOperation(value = "流程-获取指定业务表信息", notes = "获取指定业务表信息")
     @RequestMapping(value = "/getActBusinessByTableInfo", method = RequestMethod.GET)
-    public Result<ActBusiness> getActBusinessByTableInfo(@RequestParam(value = "tableName",defaultValue = "") String tableName, @RequestParam(value = "tableId",defaultValue = "") String tableId) {
+    public Result<ActBusiness> getActBusinessByTableInfo(@RequestParam(value = "tableName", defaultValue = "") String tableName, @RequestParam(value = "tableId", defaultValue = "") String tableId) {
         return Result.OK(actBusinessService.getActBusinessByTableInfo(tableName, tableId));
     }
+
+    @AutoLog(value = "流程-表单自动生成获取数据库的表名列表")
+    @ApiOperation(value = "流程-获取数据库表名列表", notes = "表单自动生成获取数据库的表名列表")
+    @RequestMapping(value = "/getTableNameList", method = RequestMethod.GET)
+    public Result<List<String>> getTableNameList(@RequestParam(value = "schemaName", defaultValue = "'jeecg-boot'") String schemaName) {
+        return Result.OK(actBusinessService.getTableNameList(schemaName));
+    }
+
+    @AutoLog(value = "流程-表单自动生成获取表的字段列表")
+    @ApiOperation(value = "流程-获取表的字段列表", notes = "获取表的字段列表")
+    @RequestMapping(value = "/getColumnNameList", method = RequestMethod.GET)
+    public Result<List<String>> getColumnNameList(@RequestParam(value = "tableName", defaultValue = "'act_b_leave'") String tableName,
+                                                    @RequestParam(value = "schemaName",defaultValue = "'jeecg-boot'") String schemaName) {
+        return Result.OK(actBusinessService.getColumnNameList(tableName, schemaName));
+    }
+
 }

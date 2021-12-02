@@ -27,6 +27,12 @@ public interface ActBusinessMapper extends BaseMapper<ActBusiness> {
     @Update("${sql}")
     int updateBusiData(@Param("sql") String sql);
 
+    @Select("${sql}")
+    List<String> getTableNameList(@Param("sql") String sql);
+
+    @Select("${sql}")
+    List<String> getColumnNameList(@Param("sql") String sql);
+
     @Delete("delete from ${tableName} where id = #{tableId}")
     int deleteBusiData(@Param("tableId") String tableId, @Param("tableName") String tableName);
 

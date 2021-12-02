@@ -20,6 +20,7 @@ import org.jeecg.common.system.api.ISysBaseAPI;
 import org.jeecg.common.system.vo.ComboModel;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.util.DateUtils;
+import org.jeecg.common.util.dynamic.db.SqlUtils;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.activiti.entity.ActBusiness;
 import org.jeecg.modules.activiti.entity.ActZprocess;
@@ -33,6 +34,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.jeecg.common.util.dynamic.db.SqlUtils.DATABSE_TYPE_MYSQL;
 
 /**
  * 流程业务扩展表
@@ -425,5 +428,17 @@ public class ActBusinessServiceImpl extends ServiceImpl<ActBusinessMapper, ActBu
 
     public void deleteBusinessSub(String subTableName, String fkId,String tableId) {
         this.baseMapper.deleteBusiSubData(tableId, subTableName, fkId);
+    }
+
+    @Override
+    public List<String> getTableNameList(String schemaName) {
+        String sql = SqlUtils.getAllTableSql(DATABSE_TYPE_MYSQL, schemaName);
+        return this.baseMapper.getTableNameList(sql);
+    }
+
+    @Override
+    public List<String> getColumnNameList(String tableName, String schemaName) {
+        String sql = SqlUtils.getAllColumnSQL(DATABSE_TYPE_MYSQL, tableName, schemaName);
+        return this.baseMapper.getTableNameList(sql);
     }
 }
