@@ -1027,13 +1027,11 @@ export default {
     getColumnNameList() {
       const url = '/actBusiness/getColumnNameList'
       const method = 'get'
-      console.log(this.formConf.formRef);
       this.params.tableName = `'${this.formConf.formRef}'`;
       this.params.schemaName = "'jeecg-boot'";
       this.postFormAction(url, this.params).then((res) => {
         if (res.success) {
           this.columnNames = res.result
-          console.log(this.columnNames);
         } else {
           this.$message.warning(res.message)
         }
