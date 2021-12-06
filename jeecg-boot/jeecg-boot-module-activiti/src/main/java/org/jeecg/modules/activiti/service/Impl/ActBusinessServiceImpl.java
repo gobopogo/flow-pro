@@ -439,6 +439,7 @@ public class ActBusinessServiceImpl extends ServiceImpl<ActBusinessMapper, ActBu
     @Override
     public List<String> getColumnNameList(String tableName, String schemaName) {
         String sql = SqlUtils.getAllColumnSQL(DATABSE_TYPE_MYSQL, tableName, schemaName);
-        return this.baseMapper.getTableNameList(sql);
+        List<String> columNames = this.baseMapper.getTableNameList(sql);
+        return columNames.stream().map( columName -> oConvertUtils.camelName(columName)).collect(Collectors.toList());
     }
 }

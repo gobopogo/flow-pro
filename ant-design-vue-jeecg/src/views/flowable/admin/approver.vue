@@ -27,29 +27,16 @@
         ref="basicSetting" 
         :conf=null
         v-show="activeStep === 'basicSetting'" 
-        tabName="basicSetting"
-        @initiatorChange="onInitiatorChange" /> 
+        tabName="basicSetting" /> 
 
       <DynamicForm
         ref="formDesign"
-        :conf="mockData.formData"
         v-show="activeStep === 'formDesign'" 
         tabName="formDesign" />
 
       <Flowable  
         ref="processDesign"
         v-show="activeStep === 'processDesign'" />
-      <!-- <Process  
-        ref="processDesignFloable"
-        :conf="mockData.processData"
-        tabName="processDesignFloable" 
-        v-show="activeStep === 'processDesignFloable'" 
-        @startNodeChange="onStartChange"/>
-
-      <AdvancedSetting
-        ref="advancedSetting"
-        :conf="mockData.advancedSetting"
-        v-show="activeStep === 'advancedSetting'" /> -->
 
     </section>
     <div class="github">
@@ -64,12 +51,11 @@
 
 <script>
 // @ is an alias to /src
-import Process from "@/components/Process";
 import Flowable from "@/components/Flowable";
-import DynamicForm from "@/components/DynamicForm";
+// import DynamicForm from "@/components/DynamicForm";
+import DynamicForm from "@/components/FormGenerator/index/Home";
 import BasicSetting from '@/components/BasicSetting'
-import AdvancedSetting from '@/components/AdvancedSetting'
-import MockData from './mockData.js'
+// import MockData from './mockData.js'
 import {mapMutations} from 'vuex'
 const beforeUnload = function (e) {
   var confirmationMessage = '离开网站可能会丢失您编辑得内容';
@@ -87,14 +73,12 @@ export default {
   },
   data() {
     return {
-      mockData: MockData, // 可选择诸如 $route.param，Ajax获取数据等方式自行注入
+      // mockData: MockData, // 可选择诸如 $route.param，Ajax获取数据等方式自行注入
       activeStep: "basicSetting", // 激活的步骤面板
       steps: [
         { label: "基础设置", key: "basicSetting" },
         { label: "表单设计", key: "formDesign" },
         { label: "流程设计", key: "processDesign" }
-        // { label: "流程设计flowable", key: "processDesignFloable" },
-        // { label: "高级设置", key: "advancedSetting" }
       ]
     };
   },
@@ -124,7 +108,6 @@ export default {
     publish() {
       const getCmpData = name => this.$refs[name].getData()
       // basicSetting  formDesign processDesign 返回的是Promise 因为要做校验
-      // advancedSetting返回的就是值
       const p1 = getCmpData('basicSetting') 
       const p2 = getCmpData('formDesign')
       const p3 = getCmpData('processDesign')
@@ -134,7 +117,6 @@ export default {
           basicSetting: res[0].formData,
           processData: res[2].formData,
           formData: res[1].formData
-          // advancedSetting: getCmpData('advancedSetting')
         }
         this.sendToServer(param)
       })
@@ -163,30 +145,12 @@ export default {
           });
         }).catch(() => { });
     },
-    /**
-     * 同步基础设置发起人和流程节点发起人
-     */
-    onInitiatorChange (val, labels) {
-      const processCmp = this.$refs.processDesign
-      const startNode = processCmp.data
-      startNode.properties.initiator = val['dep&user']
-      startNode.content =  labels  || '所有人'
-      processCmp.forceUpdate()
-    },
-    /**
-     * 监听 流程节点发起人改变 并同步到基础设置 发起人数据
-     */
-    onStartChange(node){
-      const basicSetting = this.$refs.basicSetting
-      basicSetting.formData.initiator = { 'dep&user': node.properties.initiator }
-    }
+
   },
   components: {
-    Process,
+    Flowable,
     DynamicForm,
     BasicSetting,
-    AdvancedSetting,
-    Flowable
   }
 };
 </script>

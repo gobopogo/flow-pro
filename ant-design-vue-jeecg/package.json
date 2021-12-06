@@ -44,14 +44,16 @@
     "vue-print-nb-jeecg": "^1.0.9",
     "vue-router": "^3.0.1",
     "vue-splitpane": "^1.0.4",
-    "vuedraggable": "^2.20.0",
+    "vuedraggable": "^2.23.2",
     "vuex": "^3.1.0",
     "vxe-table": "2.9.13",
     "vxe-table-plugin-antd": "1.8.10",
     "webrtc-adapter": "^7.6.0",
     "xe-utils": "2.4.8",
     "bpmn-js": "^7.2.1",
-    "xcrud": "0.4.1"
+    "xcrud": "0.4.1",
+    "file-saver": "^2.0.2",
+    "throttle-debounce": "^2.1.0"
   },
   "devDependencies": {
     "@babel/polyfill": "^7.2.5",
@@ -71,7 +73,8 @@
     "sass-resources-loader": "^2.2.4",
     "vue-template-compiler": "^2.6.10",
     "stylus": "^0.54.7",
-    "stylus-loader": "^3.0.2"
+    "stylus-loader": "^3.0.2",
+    "svg-sprite-loader": "^4.1.6"
   },
   "eslintConfig": {
     "root": true,

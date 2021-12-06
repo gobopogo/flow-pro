@@ -101,11 +101,6 @@ export default {
     })
   },
   methods: {
-    emitInitiator(){
-      this.$nextTick(()=>{
-        this.$emit('initiatorChange', this.formData.initiator, this.$refs['org-select'].selectedLabels)
-      })
-    },
     // 给父级页面提供得获取本页数据得方法
     getData() {
       return new Promise((resolve, reject) => {

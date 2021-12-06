@@ -1,6 +1,6 @@
 <script>
 import render from '@/utils/render.js'
-import mockData from '../admin/mockData.js'
+// import mockData from '../admin/mockData.js'
 import { trigger } from '@/components/DynamicForm/components/generator/config.js'
 /**
  * 校验组织机构组件是否为空
@@ -143,7 +143,7 @@ const layouts = {
 
 export default {
   data () {
-    var confGlobal = this.$route.params.formData || mockData.formData
+    var confGlobal = this.$route.params.formData 
     Object.freeze(confGlobal)
     return {
       tableRefs: {},

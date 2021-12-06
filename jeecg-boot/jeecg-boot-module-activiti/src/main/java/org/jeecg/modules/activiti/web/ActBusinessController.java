@@ -315,9 +315,11 @@ public class ActBusinessController {
 
     @AutoLog(value = "流程-表单自动生成获取表的字段列表")
     @ApiOperation(value = "流程-获取表的字段列表", notes = "获取表的字段列表")
-    @RequestMapping(value = "/getColumnNameList", method = RequestMethod.GET)
+    @RequestMapping(value = "/getColumnNameList", method = RequestMethod.POST)
     public Result<List<String>> getColumnNameList(@RequestParam(value = "tableName", defaultValue = "'act_b_leave'") String tableName,
                                                     @RequestParam(value = "schemaName",defaultValue = "'jeecg-boot'") String schemaName) {
+        log.info("入参测试tableName:{tableName}");
+        log.info("入参测试schemaName:{schemaName}");
         return Result.OK(actBusinessService.getColumnNameList(tableName, schemaName));
     }
 

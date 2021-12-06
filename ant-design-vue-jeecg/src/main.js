@@ -8,9 +8,10 @@ import router from './router'
 import store from './store/'
 import { VueAxios } from "@/utils/request"
 import './icons/index' // icon
+// import axios from 'axios'
+// Vue.prototype.$axios = axios
 
 import '@/components/DynamicForm/styles/index.styl'
-import '@/components/DynamicForm/icons'
 import FormControls from './components/FormControls/index.js'
 Vue.use( FormControls )
 
@@ -56,6 +57,12 @@ import '@/assets/less/JAreaLinkage.less'
 import VueAreaLinkage from 'vue-area-linkage'
 import '@/components/jeecg/JVxeTable/install'
 import '@/components/JVxeCells/install'
+
+import '@/components/FormGenerator/styles/index.scss'
+import Tinymce from '@/components/FormGenerator/components/tinymce/index.vue'
+
+Vue.component('tinymce', Tinymce)
+
 //表单验证
 import { rules } from '@/utils/rules'
 Vue.prototype.rules = rules
