@@ -423,9 +423,14 @@ export default {
       this.jsonDrawerVisible = true
     },
     download() {
-      this.dialogVisible = true
-      this.showFileName = true
+      this.dialogVisible = false
+      this.showFileName = false
       this.operationType = 'download'
+
+      this.generateConf = 'file'
+      const outFile = {}
+      outFile.fileName = this.formConf.formRef + '.vue'
+      this.execDownload(outFile)
     },
     run() {
       this.dialogVisible = true

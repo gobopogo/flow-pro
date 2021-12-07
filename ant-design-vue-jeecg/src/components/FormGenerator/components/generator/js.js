@@ -106,6 +106,7 @@ function mixinMethod(type) {
         this.$refs['${confGlobal.formRef}'].validate(valid => {
           if(!valid) return
           // TODO 提交表单
+          
         })
       },`,
         resetForm: `resetForm() {
@@ -243,9 +244,33 @@ function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, m
   const str = `${exportDefault}{
   ${inheritAttrs[type]}
   components: {},
-  props: [],
+  props: {
+    /*全局禁用，可表示查看*/
+    disabled:{
+      type:Boolean,
+      default:false,
+      required:false
+    },
+    /*流程数据*/
+    processData:{
+      type:Object,
+      default:()=>{return {}},
+      required:false
+    },
+    /*是否新增*/
+    isNew: {type: Boolean, default: false, required: false},
+    /*是否处理流程*/
+    task: {type: Boolean, default: false, required: false}
+  },
   data () {
     return {
+      url:{
+        getForm:'/actBusiness/getForm',
+        addApply:'/actBusiness/add',
+        editForm:'/actBusiness/editForm',
+      },
+      description: '流程表单，按约定需要把此文件移动到目录 src/views/activiti/form/',
+      btndisabled: false,
       ${conf.formModel}: {
         ${data}
       },
@@ -260,10 +285,79 @@ function buildexport(conf, type, data, rules, selectOptions, uploadVar, props, m
   computed: {},
   watch: {},
   created () {
+    console.log("流程数据",this.processData)
+    if (!this.isNew){
+      this.init();
+    }
     ${created}
   },
   mounted () {},
   methods: {
+    /*回显数据*/
+    init(){
+      var r = this.processData;
+      if(!r.tableId) {
+        return
+      }
+      this.btndisabled = true;
+      this.getAction(this.url.getForm,{
+        tableId:r.tableId,
+        tableName:r.tableName,
+      }).then((res)=>{
+        if (res.success){
+          let formData = res.result;
+          formData.tableName = r.tableName;
+          console.log("表单回显数据",formData)
+          Object.keys(this.formData).forEach(key => {
+            this.formData[key] = formData[key]
+          })
+          this.btndisabled = false;
+        }else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    // handler
+    handleSubmit (e) {
+      e.preventDefault()
+      this.$refs['${confGlobal.formRef}'].validate(valid => {
+        if (valid) {
+          let formData = Object.assign({}, this.formData)
+          formData.procDefId = this.processData.id;
+          formData.procDeTitle = this.processData.name;
+          if (!formData.tableName)formData.tableName = this.processData.businessTable;
+          formData.filedNames = Object.keys(this.formData).join(","); 
+          var url = this.url.addApply;
+          if (!this.isNew){
+            url = this.url.editForm;
+          }
+          this.btndisabled = true;
+          this.postFormAction(url,formData).then((res)=>{
+            if (res.success){
+              this.$message.success("保存成功！")
+              //todo 将表单的数据传给父组件
+              this.$emit('afterSubmit',formData)
+            }else {
+              this.$message.error(res.message)
+            }
+          }).finally(()=>{
+            this.btndisabled = false;
+          })
+        }
+      })
+    },
+    close() {
+      //todo 关闭后的回调
+      this.$emit('close')
+    },
+    /*通过审批*/
+    passTask() {
+      this.$emit('passTask')
+    },
+    /*驳回审批*/
+    backTask() {
+      this.$emit('backTask')
+    },
     ${methods}
   }
 }`

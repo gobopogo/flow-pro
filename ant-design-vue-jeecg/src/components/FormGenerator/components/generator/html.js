@@ -24,6 +24,7 @@ export function vueTemplate(str) {
 
 export function vueScript(str) {
   return `<script>
+    import pick from "lodash.pick";
     ${str}
   </script>`
 }
@@ -55,10 +56,15 @@ function buildFormTemplate(scheme, child, type) {
 function buildFromBtns(scheme, type) {
   let str = ''
   if (scheme.formBtns && type === 'file') {
-    str = `<el-form-item size="large">
-          <el-button type="primary" @click="submitForm">提交</el-button>
-          <el-button @click="resetForm">重置</el-button>
-        </el-form-item>`
+    str = `<el-form-item v-if="!disabled" style="text-align: center">
+          <el-button type="primary" :disabled="disabled||btndisabled" @click="handleSubmit">保存</el-button>
+          <el-button style="margin-left: 8px" :disabled="disabled" @click="close">取消</el-button>
+        </el-form-item>
+        <el-form-item  v-if="task" style="text-align: center">
+          <el-button type="primary"  @click="passTask">通过</el-button>
+          <el-button style="margin-left: 8px" @click="backTask">驳回</el-button>
+        </el-form-item>
+        `
     if (someSpanIsNot24) {
       str = `<el-col :span="24">
           ${str}
