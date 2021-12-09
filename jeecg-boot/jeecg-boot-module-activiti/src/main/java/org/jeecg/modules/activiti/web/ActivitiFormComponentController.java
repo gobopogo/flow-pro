@@ -29,6 +29,17 @@ public class ActivitiFormComponentController {
     @Autowired
     private ActFormComponentServiceImpl actFormComponentService;
 
+    @RequestMapping(value = "/queryDynamicForm", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "表单组件查询", notes = "表单组件查询")
+    public Result<List<ActFormComponent>> queryDynamicForm(HttpServletRequest request) {
+        Map<String, Object> map = new HashMap<>(8);
+        map.put("business_table", request.getParameter("businessTable"));
+        map.put("table_type", "4");
+        List<ActFormComponent> models = actFormComponentService.listByMap(map);
+        return Result.OK(models);
+    }
+
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value = "表单组件查询", notes = "表单组件查询")

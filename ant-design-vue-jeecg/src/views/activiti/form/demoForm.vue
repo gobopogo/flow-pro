@@ -73,7 +73,7 @@
       }
     },
     created() {
-      console.log("流程数据",this.processData)
+      console.log("流程数据demo",this.processData)
       if (!this.isNew){
         this.init();
       }

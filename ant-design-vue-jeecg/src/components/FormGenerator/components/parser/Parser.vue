@@ -1,5 +1,4 @@
 <script>
-import { deepClone } from '@/components/FormGenerator/utils/index'
 import render from '@/components/FormGenerator/components/render/render.js'
 
 const ruleTrigger = {
@@ -25,7 +24,7 @@ const layouts = {
       <el-col span={config.span}>
         <el-form-item label-width={labelWidth} prop={scheme.__vModel__}
           label={config.showLabel ? config.label : ''}>
-          <render conf={scheme} on={listeners} />
+          <render conf={scheme} {...{ on: listeners }} />
         </el-form-item>
       </el-col>
     )
@@ -70,13 +69,28 @@ function renderFrom(h) {
 }
 
 function formBtns(h) {
-  return <el-col>
-    <el-form-item size="large">
-      <el-button type="primary" onClick={this.submitForm}>提交</el-button>
-      <el-button onClick={this.resetForm}>重置</el-button>
+  let submitChild
+  let taskChild
+
+  if (!this.disabled) {
+    submitChild = <el-form-item style="text-align: center" size="large">
+      <el-button type="primary" disabled={this.disabled || this.btndisabled} onClick={this.submitForm}>保存</el-button>
+      <el-button style="margin-left: 8px" disabled={this.disabled} onClick={this.resetForm}>取消</el-button>
     </el-form-item>
+  }
+  if (this.task) {
+    taskChild = <el-form-item style="text-align: center" size="large">
+      <el-button type="primary" onClick={this.passTask}>通过</el-button>
+      <el-button style="margin-left: 8px" onClick={this.backTask}>驳回</el-button>
+    </el-form-item>
+  }
+  return <el-col>
+    {submitChild}
+    {taskChild}
   </el-col>
 }
+
+
 
 function renderFormItem(h, elementList) {
   return elementList.map(scheme => {
@@ -124,11 +138,49 @@ export default {
     formConf: {
       type: Object,
       required: true
+    },
+    formEditData: {
+      type: Object
+    },
+    isEdit: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+      required: false
+    },
+    btndisabled: {
+      type: Boolean,
+      default: false,
+      required: false
+    },
+    task: {
+      type: Boolean,
+      default: false,
+      required: false
     }
   },
   data() {
+    if (this.isEdit) { // 初始化待编辑数据
+      this.formConf.fields.forEach(conf => {
+        // 设置现有的数据
+        const hasValueForEdit = this.formEditData[conf.__vModel__]
+        if(hasValueForEdit){
+          conf.__config__.defaultValue = hasValueForEdit
+        }
+        // 如果是el-select标签 判断数据后改变实现默认选中效果
+        if(conf.__config__.tag === 'el-select' || conf.__config__.tag === 'el-radio-group'){
+          const perValue = conf.__slot__.options.filter(option => option.value == this.formEditData[conf.__vModel__])
+          if(perValue.length > 0){ // 有表单数据
+            conf.__config__.defaultValue = perValue[0].value
+          }
+        }
+      })
+    }
     const data = {
-      formConfCopy: deepClone(this.formConf),
+      formConfCopy: JSON.parse(JSON.stringify(this.formConf)),
       [this.formConf.formModel]: {},
       [this.formConf.formRules]: {}
     }
@@ -167,7 +219,8 @@ export default {
       })
     },
     resetForm() {
-      this.formConfCopy = deepClone(this.formConf)
+      this.$emit('resetForm', this.formConf)
+      this.formConfCopy = JSON.parse(JSON.stringify(this.formConf))
       this.$refs[this.formConf.formRef].resetFields()
     },
     submitForm() {
@@ -177,6 +230,12 @@ export default {
         this.$emit('submit', this[this.formConf.formModel])
         return true
       })
+    },
+    passTask() {
+      this.$emit('passTask')
+    },
+    backTask() {
+      this.$emit('backTask')
     }
   },
   render(h) {

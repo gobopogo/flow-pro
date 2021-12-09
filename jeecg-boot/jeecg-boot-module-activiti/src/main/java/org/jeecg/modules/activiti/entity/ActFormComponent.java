@@ -36,4 +36,6 @@ public class ActFormComponent {
     private String tableType;
     @ApiModelProperty(value = "其他信息")
     private String otherInfo;
+    @ApiModelProperty(value = "表单内容，json格式")
+    private String formContent;
 }

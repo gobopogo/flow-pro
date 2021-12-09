@@ -41,6 +41,7 @@
         <span v-if="text === '1'">单表</span>
         <span v-if="text === '2'">单表(树)</span>
         <span v-if="text === '3'">主表</span>
+        <span v-if="text === '4'">动态表单</span>
       </span>
       <span slot="make" slot-scope="text, record">
         <a href="javascript:void(0);" @click="createObj.title = '编辑表单组件';editFormComponent(record)" >编辑</a>
@@ -80,6 +81,7 @@
             <a-select-option value="1">单表</a-select-option>
             <a-select-option value="2">单表(树)</a-select-option>
             <a-select-option value="3">主表</a-select-option>
+            <a-select-option value="4">动态表单</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="其他信息" >

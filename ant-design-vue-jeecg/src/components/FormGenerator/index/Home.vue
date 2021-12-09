@@ -41,9 +41,9 @@
 
     <div class="center-board">
       <div class="action-bar">
-        <el-button icon="el-icon-video-play" type="text" @click="run">
+        <!-- <el-button icon="el-icon-video-play" type="text" @click="run">
           运行
-        </el-button>
+        </el-button> -->
         <el-button icon="el-icon-view" type="text" @click="showJson">
           查看json
         </el-button>
@@ -166,6 +166,7 @@ export default {
     CodeTypeDialog,
     DraggableItem
   },
+  props: ['tabName'],
   data() {
     return {
       logo,
@@ -266,6 +267,40 @@ export default {
     })
   },
   methods: {
+    // 给父级页面提供得获取本页数据得方法
+    getData() {
+      this.AssembleFormData()
+      let httpurl = '/activiti/formComponent/add'
+      let formData = {
+        text: this.formData.formRef,
+        routeName: '@/views/activiti/form/ZBParser',
+        component: 'views/activiti/form/ZBParser',
+        businessTable: this.formData.formRef,
+        tableType: '4',
+        formContent: JSON.stringify(this.formData)
+      }
+      console.log("表单提交数据",formData)
+      httpAction(httpurl,formData,'post').then((res)=>{
+        if(res.success){
+          this.$emit('ok');
+        }else{
+          this.$message.warning(res.message);
+        }
+      }).finally(() => {
+
+      })
+      return new Promise((resolve, reject) => {
+        // this.$refs['elForm'].validate(valid => {
+        //   if (!valid) {
+        //     reject({ target: this.tabName})
+        //     return
+        //   }
+        //   this.formData.flowImg = this.activeIcon
+        //   resolve({ formData: this.formData, target: this.tabName})  // TODO 提交表单
+        // })
+        resolve({ formData: this.formData, target: this.tabName}) 
+      })
+    },
     setObjectValueReduce(obj, strKeys, data) {
       const arr = strKeys.split('.')
       arr.reduce((pre, item, i) => {

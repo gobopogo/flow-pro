@@ -157,7 +157,7 @@
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="关联表单" >
           <a-select @change="change_routeName" placeholder="请选择关联表单" :trigger-change="true" v-decorator="[ 'routeName', {initialValue:editObj.routeName, rules: [{ required: true, message: '不能为空' }] },]">
             <a-select-option value="">请选择</a-select-option>
-            <a-select-option v-for="(item, i) in allComponent" :key="item.routeName" :value="item.routeName">
+            <a-select-option v-for="(item, index) in allComponent" :key="index" :value="item.routeName">
               <span style="display: inline-block;width: 100%" :title=" item.text">
                 {{ item.text}}
               </span>
@@ -165,19 +165,6 @@
           </a-select>
           <a @click="viewForm()">预览表单</a>
         </a-form-item>
-
-<!--        <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="关联打印报表" >
-          <a-select @change="change_routeName" placeholder="请选择关联报表" :trigger-change="true" v-decorator="[ 'reportModelId', {initialValue:editObj.reportModelId, rules: [{ required: true, message: '不能为空' }] },]">
-            <a-select-option value="">请选择</a-select-option>
-            <a-select-option v-for="(item, i) in reportList" :key="item.id" :value="item.id">
-              <span style="display: inline-block;width: 100%" :title=" item.name">
-                {{ item.name}}
-              </span>
-            </a-select-option>
-          </a-select>
-          &lt;!&ndash;<a href="javascrip:void(0)" @click="viewForm()">预览表单</a>&ndash;&gt;
-        </a-form-item>-->
-
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="角色授权" >
           <j-select-role placeholder="不选择则所有人可用" v-decorator="[ 'roles', {initialValue:editObj.roles, rules: []}]"/>
         </a-form-item>
@@ -291,7 +278,7 @@
     </a-modal>
     <!--流程表单 预览-->
     <a-modal  :title="lcModa.title" v-model="lcModa.visible" :footer="null" :maskClosable="false" width="80%">
-      <component :is="lcModa.formComponent" :disabled="true"></component>
+      <component :is="lcModa.formComponent" :disabled="true" :processData="flowData"></component>
     </a-modal>
   </a-card>
 
@@ -390,7 +377,8 @@
         },
         lcTypeF:[],
         dataList: [],
-        updateRow: {}
+        updateRow: {},
+        flowData: {}
       }
     },
     computed:{
@@ -401,16 +389,6 @@
       },
     },
     methods: {
-      /*initReportList(){
-        // 加载reportList
-        getAction('/report/reportModel/all',{}).then(res=>{
-          if(res.success){
-            this.reportList = res.result;
-          }
-        }).catch(()=>{
-          console.log("字典加载失败");
-        });
-      },*/
       initDictConfig() {
         //初始化字典 - 流程分类
         initDictOptions('bpm_process_type').then((res) => {
@@ -445,7 +423,6 @@
 
       change_steps(node,index){
         this.spryTypes = [];
-        console.log('onChange:', node);
         this.current = index;
         this.editNode = node;
         /* 0角色 1用户 2部门 3发起人 4发起人的部门负责人 5部门的部门负责人*/
@@ -563,14 +540,13 @@
       },
       change_routeName(){
         this.$nextTick(()=>{
-          let routeName = this.editForm.getFieldValue('routeName');
-          console.log("routeName",routeName)
-          var route = this.getFormComponent(routeName);
-          this.editObj.businessTable = route.businessTable;
-          this.editObj.tableType = route.tableType;
-          this.editObj.otherInfo = route.otherInfo;
-          this.editObj.routeName = route.routeName;
-          console.log("this.editObj",this.editObj)
+          let routeName = this.editForm.getFieldValue('routeName')
+          var route = this.getFormComponent(routeName)
+          this.editObj.businessTable = route.businessTable
+          this.editObj.tableType = route.tableType
+          this.editObj.otherInfo = route.otherInfo
+          this.editObj.routeName = route.routeName
+          this.flowData.businessTable = route.businessTable
         })
       },
       viewForm(routeName) {
@@ -585,6 +561,7 @@
         this.lcModa.formComponent = () => import(`@/${formComponent.component}`);
         this.lcModa.title = '流程表单预览：'+formComponent.text;
         this.lcModa.visible = true;
+        this.flowData = {businessTable: this.editObj.businessTable}
       },
       convertToModel(row){
         let that = this;

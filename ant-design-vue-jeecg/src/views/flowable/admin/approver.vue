@@ -50,12 +50,9 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import Flowable from "@/components/Flowable";
-// import DynamicForm from "@/components/DynamicForm";
 import DynamicForm from "@/components/FormGenerator/index/Home";
 import BasicSetting from '@/components/BasicSetting'
-// import MockData from './mockData.js'
 import {mapMutations} from 'vuex'
 const beforeUnload = function (e) {
   var confirmationMessage = '离开网站可能会丢失您编辑得内容';
@@ -108,9 +105,11 @@ export default {
     publish() {
       const getCmpData = name => this.$refs[name].getData()
       // basicSetting  formDesign processDesign 返回的是Promise 因为要做校验
-      const p1 = getCmpData('basicSetting') 
+      // const p1 = getCmpData('basicSetting') 
+      const p1 = {}
       const p2 = getCmpData('formDesign')
-      const p3 = getCmpData('processDesign')
+      // const p3 = getCmpData('processDesign')
+      const p3 = {}
       Promise.all([p1, p2, p3])
       .then(res => {
         const param = {
