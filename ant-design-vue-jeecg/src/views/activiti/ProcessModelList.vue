@@ -93,7 +93,7 @@
       </a-table-column>
       <a-table-column title="表单路由" dataIndex="routeName" :width="200" align="center">
         <template slot-scope="t,r,i">
-          <span @click="viewForm(t)" style="color: blue;cursor: pointer;"> {{getFormComponent(t).text}} </span>
+          <span @click="viewForm(t, r)" style="color: blue;cursor: pointer;"> {{getFormComponentByName(t, r.businessTable).text}} </span>
         </template>
       </a-table-column>
       <a-table-column title="状态" dataIndex="status" :width="200" align="center">
@@ -155,9 +155,9 @@
           </j-tree-dict>
         </a-form-item>
         <a-form-item :label-col="labelCol" :wrapper-col="wrapperCol" label="关联表单" >
-          <a-select @change="change_routeName" placeholder="请选择关联表单" :trigger-change="true" v-decorator="[ 'routeName', {initialValue:editObj.routeName, rules: [{ required: true, message: '不能为空' }] },]">
+          <a-select @change="change_routeName" placeholder="请选择关联表单" :trigger-change="true" v-decorator="[ 'routeId', {initialValue:getFormComponentByName(editObj.routeName, editObj.businessTable).id, rules: [{ required: true, message: '不能为空' }] },]">
             <a-select-option value="">请选择</a-select-option>
-            <a-select-option v-for="(item, index) in allComponent" :key="index" :value="item.routeName">
+            <a-select-option v-for="(item, index) in allComponent" :key="index" :value="item.id">
               <span style="display: inline-block;width: 100%" :title=" item.text">
                 {{ item.text}}
               </span>
@@ -524,7 +524,6 @@
         this.editForm.validateFields((err, values) => {
           if (!err) {
             let formData = Object.assign(this.editObj, values)
-            console.log("formData",formData)
             this.confirmLoading = true;
             this.postFormAction(this.url.updateInfo,formData).then(res => {
               if (res.success) {
@@ -540,8 +539,8 @@
       },
       change_routeName(){
         this.$nextTick(()=>{
-          let routeName = this.editForm.getFieldValue('routeName')
-          var route = this.getFormComponent(routeName)
+          let routeId = this.editForm.getFieldValue('routeId')
+          var route = this.getFormComponentById(routeId)
           this.editObj.businessTable = route.businessTable
           this.editObj.tableType = route.tableType
           this.editObj.otherInfo = route.otherInfo
@@ -549,7 +548,7 @@
           this.flowData.businessTable = route.businessTable
         })
       },
-      viewForm(routeName) {
+      viewForm(routeName, row) {
         if (!routeName) routeName = this.editObj.routeName;
         if (!routeName) {
           this.$message.warning(
@@ -557,11 +556,12 @@
           );
           return;
         }
-        let formComponent = this.getFormComponent(routeName);
+        this.editObj = Object.assign(this.editObj, row)
+        this.flowData = {businessTable: this.editObj.businessTable}
+        let formComponent = this.getFormComponentByName(routeName, this.editObj.businessTable);
         this.lcModa.formComponent = () => import(`@/${formComponent.component}`);
         this.lcModa.title = '流程表单预览：'+formComponent.text;
         this.lcModa.visible = true;
-        this.flowData = {businessTable: this.editObj.businessTable}
       },
       convertToModel(row){
         let that = this;

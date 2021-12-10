@@ -151,8 +151,7 @@
           );
           return;
         }
-        // this.lcModa.formComponent = this.getFormComponent(v.routeName).component;
-        this.lcModa.formComponent = () => import(`@/${this.getFormComponent(v.routeName).component}`);
+        this.lcModa.formComponent = () => import(`@/${this.getFormComponentByName(v.routeName, v.businessTable).component}`);
 
         this.lcModa.title = '发起流程：'+v.name;
         this.lcModa.isNew = true;

@@ -146,7 +146,7 @@ import {
 } from '@/components/FormGenerator/utils/db'
 import loadBeautifier from '@/components/FormGenerator/utils/loadBeautifier'
 import { httpAction, getAction } from '@/api/manage'
-
+import {mapMutations} from 'vuex'
 
 let beautifier
 const emptyActiveData = { style: {}, autosize: {} }
@@ -267,9 +267,11 @@ export default {
     })
   },
   methods: {
+    ...mapMutations(['setFormConf']),
     // 给父级页面提供得获取本页数据得方法
     getData() {
       this.AssembleFormData()
+      this.setFormConf(this.formData)
       let httpurl = '/activiti/formComponent/add'
       let formData = {
         text: this.formData.formRef,
@@ -289,6 +291,7 @@ export default {
       }).finally(() => {
 
       })
+
       return new Promise((resolve, reject) => {
         // this.$refs['elForm'].validate(valid => {
         //   if (!valid) {

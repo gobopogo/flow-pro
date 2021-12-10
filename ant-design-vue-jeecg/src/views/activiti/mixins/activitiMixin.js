@@ -36,9 +36,11 @@ export const activitiMixin = {
         console.log("表单组件加载失败");
       });
     },
-    getFormComponent(routeName){
-      // return _.find(this.allFormComponent,{routeName:routeName})||{};
-      return _.find(this.allComponent,{routeName:routeName})||{};
+    getFormComponentByName(routeName, businessTable){
+      return _.find(this.allComponent,{routeName:routeName, businessTable: businessTable})||{};
+    },
+    getFormComponentById(routeId){
+      return _.find(this.allComponent,{id:routeId})||{};
     },
     millsToTime(mills) {
       if (!mills) {

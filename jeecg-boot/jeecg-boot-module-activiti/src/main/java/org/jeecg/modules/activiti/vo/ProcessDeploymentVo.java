@@ -48,4 +48,18 @@ public class ProcessDeploymentVo {
      */
     private ProcessAsignNodeVo[]  asignNodeList;
 
+    /**
+     * 关联业务表名
+     */
+    private String businessTable;
+
+    /**
+     * 关联业务表类型
+     */
+    private String tableType;
+
+    /**
+     * 关联前端表单路由名
+     */
+    private String routeName;
 }

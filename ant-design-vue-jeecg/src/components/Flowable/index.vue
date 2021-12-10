@@ -56,7 +56,6 @@ export default {
       })
     },
     save(data) {
-      // console.log(data);  // { process: {...}, xml: '...', svg: '...' }
       let asignNodeList = this.$store.state.flowable.asignNodeList
       this.deployment.asignNodeList = asignNodeList
 
@@ -69,6 +68,10 @@ export default {
 
       this.deployment.xml = data.xml
       this.deployment.svg = data.svg
+
+      let formConf = this.$store.state.flowable.formConf
+      console.log("getformConf",formConf)
+      this.deployment.businessTable = formConf.formRef
 
       httpAction(this.url.createanddeployment,this.deployment,'post').then(res => {
         if (res.success) {

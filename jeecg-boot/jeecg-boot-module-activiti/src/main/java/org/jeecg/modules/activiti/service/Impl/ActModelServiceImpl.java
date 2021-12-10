@@ -188,6 +188,9 @@ public class ActModelServiceImpl implements IActModelService {
                 actZprocess.setCategoryId(deploymentVo.getCategory());
                 actZprocess.setRoles(deploymentVo.getInitiator());
                 actZprocess.setStatus(1);
+                actZprocess.setBusinessTable(deploymentVo.getBusinessTable());
+                actZprocess.setTableType("4");
+                actZprocess.setRouteName("@/views/activiti/form/ZBParser");
                 actZprocessService.setAllOldByProcessKey(modelData.getKey());
                 actZprocess.setLatest(true);
                 actZprocessService.save(actZprocess);

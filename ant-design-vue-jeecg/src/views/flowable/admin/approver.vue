@@ -105,11 +105,9 @@ export default {
     publish() {
       const getCmpData = name => this.$refs[name].getData()
       // basicSetting  formDesign processDesign 返回的是Promise 因为要做校验
-      // const p1 = getCmpData('basicSetting') 
-      const p1 = {}
+      const p1 = getCmpData('basicSetting') 
       const p2 = getCmpData('formDesign')
-      // const p3 = getCmpData('processDesign')
-      const p3 = {}
+      const p3 = getCmpData('processDesign')
       Promise.all([p1, p2, p3])
       .then(res => {
         const param = {

@@ -15,6 +15,7 @@ const flowable = {
     formItemList: [], // 流程节点表单权限控制——组件列表
     baseInfo: {},
     asignNodeList: [],
+    formConf: {},
   },
   mutations: {
     //所有mutations中的方法的第一个参数一定是state变量，用来进行对state中的状态的操作
@@ -44,7 +45,10 @@ const flowable = {
     setBaseInfo ( state, data ) {
       state.baseInfo = data
     },
-
+    setFormConf ( state, data ) {
+      state.formConf = data
+    },
+  
     initAsignNodeList ( state, data ) {
       state.asignNodeList = data
     },

@@ -215,7 +215,7 @@ export default {
       }
       this.lcModa.disabled = true
       this.lcModa.title = '查看流程业务信息：' + r.processName
-      this.lcModa.formComponent = () => import(`@/${this.getFormComponent(r.routeName).component}`);
+      this.lcModa.formComponent = () => import(`@/${this.getFormComponentByName(r.routeName, r.businessTable).component}`);
       this.lcModa.processData = r
       this.lcModa.isNew = false
       this.lcModa.isTask = false
@@ -228,14 +228,6 @@ export default {
       }
       this.procInstId = r.procInstId;
       this.modalLsVisible = true;
-
-      // this.lcModa.disabled = true
-      // this.lcModa.title = '查看流程业务信息：' + r.processName
-      // this.lcModa.formComponent = this.getFormComponent(r.routeName).component
-      // this.lcModa.processData = r
-      // this.lcModa.isNew = false
-      // this.lcModa.isTask = true
-      // this.lcModa.visible = true
 
     },
     remove(v) {
