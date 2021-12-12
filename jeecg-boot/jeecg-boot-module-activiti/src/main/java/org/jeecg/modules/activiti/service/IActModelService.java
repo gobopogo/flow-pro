@@ -17,7 +17,7 @@ public interface IActModelService {
      *
      * @param reader 输入文件读取
      */
-    String createModel(InputStreamReader reader, ProcessDeploymentVo deployment);
+    Result<Object> createModel(InputStreamReader reader, ProcessDeploymentVo deployment);
 
     /**
      * 发布流程
@@ -25,5 +25,5 @@ public interface IActModelService {
      * @param modelId    模型标识
      * @param deployment 发布内容
      */
-    Result<Object> deployProcess(String modelId, ProcessDeploymentVo deployment);
+    Result<Object> deployProcess(Result<Object> modelId, ProcessDeploymentVo deployment);
 }

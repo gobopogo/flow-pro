@@ -32,7 +32,6 @@ import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -63,7 +62,7 @@ public class ActModelServiceImpl implements IActModelService {
     public static final String SPLIT_FLAG = ",";
 
     @Override
-    public String createModel(InputStreamReader reader, ProcessDeploymentVo deployment) {
+    public Result<Object> createModel(InputStreamReader reader, ProcessDeploymentVo deployment) {
         String processName = null;
         String processKey = null;
         String processDescription = null;
@@ -87,9 +86,11 @@ public class ActModelServiceImpl implements IActModelService {
 
             if (bpmnModel.getMainProcess() == null || bpmnModel.getMainProcess().getId() == null) {
                 System.out.println("err1");
+                return Result.error("审批至少要配置一个主流程！");
             } else {
                 if (bpmnModel.getLocationMap().isEmpty()) {
                     System.out.println("err2");
+                    Result.error("审批至少要配置一个节点!");
                 } else {
                     if (StringUtils.isEmpty(processName)) {
                         if (StringUtils.isNotEmpty(bpmnModel.getMainProcess().getName())) {
@@ -114,28 +115,28 @@ public class ActModelServiceImpl implements IActModelService {
                     ObjectNode editorNode = jsonConverter.convertToJson(bpmnModel);
 
                     repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes(StandardCharsets.UTF_8));
-                    return modelData.getId();
+                    return Result.OK(modelData.getId());
                 }
             }
         } catch (Exception e) {
-            System.out.println("err4");
+            return Result.error("解析流程xml内部错误");
         } finally {
             if (reader != null) {
                 try {
                     reader.close();
                 } catch (IOException e) {
-                    System.out.println("err5");
+                    Result.error("关闭流资源错");
                 }
             }
         }
-        return null;
+        return Result.error("创建模型错误");
     }
 
     @Override
-    public Result<Object> deployProcess(String modelId, ProcessDeploymentVo deploymentVo) {
+    public Result<Object> deployProcess(Result<Object> modelId, ProcessDeploymentVo deploymentVo) {
         log.info("流程发布详细信息{}", deploymentVo);
         // 获取模型
-        Model modelData = repositoryService.getModel(modelId);
+        Model modelData = repositoryService.getModel((String) modelId.getResult());
         byte[] bytes = repositoryService.getModelEditorSource(modelData.getId());
 
         if (bytes == null) {

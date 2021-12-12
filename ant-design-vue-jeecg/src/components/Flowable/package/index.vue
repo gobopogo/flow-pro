@@ -154,7 +154,7 @@ export default {
       try {
         await this.modeler.importXML(data)
         this.adjustPalette()
-        this.fitViewport()
+        // this.fitViewport()
         // this.fillColor()
       } catch (err) {
         console.error(err.message, err.warnings)

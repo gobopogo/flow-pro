@@ -70,13 +70,12 @@ export default {
   },
   data() {
     return {
-      // mockData: MockData, // 可选择诸如 $route.param，Ajax获取数据等方式自行注入
       activeStep: "basicSetting", // 激活的步骤面板
       steps: [
         { label: "基础设置", key: "basicSetting" },
         { label: "表单设计", key: "formDesign" },
         { label: "流程设计", key: "processDesign" }
-      ]
+      ],
     };
   },
   beforeRouteEnter(to, from, next){
@@ -96,31 +95,61 @@ export default {
     ...mapMutations(['setBaseInfo']),
     changeSteps(item) {
       this.activeStep = item.key;
+      const getCmpData = name => this.$refs[name].getData()
+      if (this.activeStep === 'processDesign' || this.activeStep === 'formDesign') {
+        const p1 = getCmpData('basicSetting') 
+        Promise.all([p1])
+        .then(res => {
+          console.log("基础信息填写完整");
+        })
+        .catch(err => {
+          err.target && (this.activeStep = err.target)
+          err.msg && this.$message.warning(err.msg)
+        })
+      }
       if (this.activeStep === 'processDesign') {
          let basic = this.$refs.basicSetting.formData
          basic.flowGroupName = this.$refs.basicSetting.flowGroupName
          this.setBaseInfo(basic)
+
+        getCmpData('formDesign') 
+        let formData = this.$refs.formDesign.formData
+        if (formData.fields.length < 2) {
+          this.activeStep = 'formDesign'
+          this.$message.warning('请先根据表配置表单')
+        }
       }
     },
     publish() {
+      //判断基础信息是否填写完整 
       const getCmpData = name => this.$refs[name].getData()
-      // basicSetting  formDesign processDesign 返回的是Promise 因为要做校验
       const p1 = getCmpData('basicSetting') 
-      const p2 = getCmpData('formDesign')
-      const p3 = getCmpData('processDesign')
-      Promise.all([p1, p2, p3])
+      Promise.all([p1])
       .then(res => {
-        const param = {
-          basicSetting: res[0].formData,
-          processData: res[2].formData,
-          formData: res[1].formData
-        }
-        this.sendToServer(param)
+        console.log("基础信息填写完整");
       })
       .catch(err => {
         err.target && (this.activeStep = err.target)
         err.msg && this.$message.warning(err.msg)
+        return
       })
+
+      //动态表单字段数是否大于2条
+      let basic = this.$refs.basicSetting.formData
+      basic.flowGroupName = this.$refs.basicSetting.flowGroupName
+      this.setBaseInfo(basic)
+      getCmpData('formDesign')
+      let formData = this.$refs.formDesign.formData
+      if (formData.fields.length < 2) {
+        this.activeStep = 'formDesign'
+        this.$message.warning('请先根据表配置表单')
+      }
+
+      //执行流程
+      if (basic.flowName.length > 0 && basic.flowGroup.length > 0 && formData.fields.length > 1) {
+        getCmpData('processDesign')
+      }
+
     },
     sendToServer(param){
       this.$notify({

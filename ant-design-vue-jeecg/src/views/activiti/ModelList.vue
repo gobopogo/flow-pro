@@ -33,7 +33,7 @@
           <span style="float: right;overflow: hidden;" class="table-page-search-submitButtons">
             <a-col :md="12" :sm="12" >
                 <a-upload
-                  name="uploadfile"
+                  name="uploadFile"
                   :multiple="true"
                   action= "http://localhost:8080/jeecg-boot/activiti/models/uploadFile"
                   @change="handleChange"

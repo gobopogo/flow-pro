@@ -1,7 +1,7 @@
 <template>
   <div v-loading="contentLoading" class="main-home" element-loading-background="rgba(0, 0, 0, 0)">
     <a-upload
-        name="uploadfile"
+        name="uploadFile"
         class="card upload"
         :multiple="true"
         action= "http://localhost:8080/jeecg-boot/activiti/models/uploadFile"

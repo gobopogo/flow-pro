@@ -44,6 +44,7 @@
 <script>
 import {ajaxGetDictItems} from '@/api/api'
 import JSelectRole from '@/components/jeecgbiz/JSelectRole'
+import {mapMutations} from 'vuex'
 export default {
   components: {JSelectRole},
   props: ['tabName', 'initiator', 'conf'],
@@ -101,6 +102,8 @@ export default {
     })
   },
   methods: {
+    ...mapMutations(['setBaseInfo']),
+
     // 给父级页面提供得获取本页数据得方法
     getData() {
       return new Promise((resolve, reject) => {
@@ -110,6 +113,8 @@ export default {
             return
           }
           this.formData.flowImg = this.activeIcon
+          this.formData.flowGroupName = this.flowGroupName
+          this.setBaseInfo(formData)
           resolve({ formData: this.formData, target: this.tabName})  // TODO 提交表单
         })
       })
