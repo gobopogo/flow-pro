@@ -148,6 +148,7 @@ export default {
       //执行流程
       if (basic.flowName.length > 0 && basic.flowGroup.length > 0 && formData.fields.length > 1) {
         getCmpData('processDesign')
+        this.activeStep = 'processDesign'
       }
 
     },

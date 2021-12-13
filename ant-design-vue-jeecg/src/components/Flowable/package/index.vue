@@ -262,13 +262,30 @@ export default {
       })
     },
     // 对外 api
-    getProcess() {
-      const element = this.getProcessElement()
-      return {
-        id: element.id,
-        name: element.name,
-        category: element.$attrs['flowable:processCategory']
+    verifyProcess() {
+      let processVerify = {
+        startNode: 0,
+        endNode: 0,
+        userNode: 0
       }
+                           
+      const flowElements = this.modeler._definitions.rootElements[0].flowElements
+      for (let i = 0; i < flowElements.length; i++) {
+        switch (flowElements[i].$type) {
+          case 'bpmn:StartEvent':
+            processVerify.startNode ++
+            break
+          case 'bpmn:EndEvent':
+            processVerify.endNode ++
+            break
+          case 'bpmn:UserTask':
+            processVerify.userNode ++
+            break
+          default:
+            break;
+        }
+      }
+      return processVerify
     },
     getProcessElement() {
       const rootElements = this.modeler.getDefinitions().rootElements
@@ -299,7 +316,7 @@ export default {
       }
     },
     async save() {
-      const process = this.getProcess()
+      const process = this.verifyProcess()
       const xml = await this.saveXML()
       const svg = await this.saveImg()
       const result = { process, xml, svg }
