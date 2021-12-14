@@ -8,12 +8,6 @@ import router from './router'
 import store from './store/'
 import { VueAxios } from "@/utils/request"
 import './icons/index' // icon
-// import axios from 'axios'
-// Vue.prototype.$axios = axios
-
-import '@/components/DynamicForm/styles/index.styl'
-import FormControls from './components/FormControls/index.js'
-Vue.use( FormControls )
 
 import ElementUI from 'element-ui'
 Vue.use( ElementUI );

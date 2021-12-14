@@ -134,7 +134,7 @@ export default {
         return
       })
 
-      //动态表单字段数是否大于2条
+      //动态表单字段数是否大于1条
       let basic = this.$refs.basicSetting.formData
       basic.flowGroupName = this.$refs.basicSetting.flowGroupName
       this.setBaseInfo(basic)
