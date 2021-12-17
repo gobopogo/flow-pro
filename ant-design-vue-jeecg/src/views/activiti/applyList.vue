@@ -533,7 +533,9 @@
         this.lcModa.disabled = true;
         this.lcModa.title = '修改流程业务信息：'+r.title;
         if (isView) this.lcModa.title = '查看流程业务信息：'+r.title;
-        this.lcModa.formComponent = () => import(`@/${this.getFormComponentByName(r.routeName, r.businessTable).component}`);
+
+        this.lcModa.formComponent = () => import(`@/${this.getFormComponentByName(r.routeName, r.tableName).component}`);
+        r.businessTable = r.tableName
         this.lcModa.processData = r;
         this.lcModa.isNew = false;
         this.lcModa.visible = true;
@@ -600,7 +602,7 @@
           );
           return;
         }
-        this.lcModa.formComponent = this.getFormComponent(v.routeName).component;
+        this.lcModa.formComponent = () => import(`@/${this.getFormComponentByName(v.routeName, v.businessTable).component}`);
         this.lcModa.title = '发起流程：'+v.name;
         this.lcModa.isNew = true;
         this.lcModa.processData = v;

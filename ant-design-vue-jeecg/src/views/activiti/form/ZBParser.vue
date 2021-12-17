@@ -1,11 +1,11 @@
 <template>
   <div>
     <parser
-      v-if="formConf.fields.length > 0"
+      v-if="formConf.fields.length > 0 && formEditData !== undefined"
       v-loading="loading"
-      :is-edit="isNew"
+      :is-edit="!isNew"
       :form-conf="formConf"
-      :form-edit-data="formData"
+      :form-edit-data="formEditData"
       :disabled="disabled"
       :btndisabled="btndisabled"
       :task="task"
@@ -61,6 +61,7 @@ export default {
       loading: false,
       formConf: { fields: [] },
       formData: {},
+      formEditData: undefined,
       url: {
         getForm: '/actBusiness/getForm',
         addApply: '/actBusiness/add',
@@ -70,11 +71,13 @@ export default {
       btndisabled: false,
     }
   },
-  created() {
+  mounted() {
     this.handlerGetFormConfig(this.formId)
     if (!this.isNew) {
       this.handlerGetFormData()
     }
+    console.log(this.disabled);
+    console.log(this.btndisabled);
   },
   methods: {
     handlerGetFormConfig() {
@@ -95,10 +98,10 @@ export default {
     },
     handlerSubmit(formValue) {
       let formData = Object.assign({}, formValue)
+      formData.filedNames = Object.keys(formValue).join(",");
       formData.procDefId = this.processData.id;
       formData.procDeTitle = this.processData.name;
       if (!formData.tableName) formData.tableName = this.processData.businessTable;
-      formData.filedNames = Object.keys(this.formData).join(",");
       var url = this.url.addApply;
       if (!this.isNew) {
         url = this.url.editForm;
@@ -132,11 +135,9 @@ export default {
         tableName: r.tableName,
       }).then((res) => {
         if (res.success) {
-          let formData = res.result;
-          formData.tableName = r.tableName;
-          Object.keys(this.formData).forEach(key => {
-            this.formData[key] = formData[key]
-          })
+          let formDataInit = res.result;
+          formDataInit.tableName = r.tableName;
+          this.formEditData = Object.assign({}, formDataInit)
           this.btndisabled = false;
         }
         else {

@@ -107,6 +107,12 @@ export default {
           err.msg && this.$message.warning(err.msg)
         })
       }
+      if (this.activeStep === 'formDesign') {
+        let formDesignRef = this.$refs.formDesign
+        let panelRef = formDesignRef.$refs.panel
+        panelRef.currentTab = 'form'
+      }
+
       if (this.activeStep === 'processDesign') {
          let basic = this.$refs.basicSetting.formData
          basic.flowGroupName = this.$refs.basicSetting.flowGroupName

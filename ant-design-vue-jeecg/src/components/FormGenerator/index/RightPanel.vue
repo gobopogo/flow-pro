@@ -1,6 +1,6 @@
 <template>
   <div class="right-board">
-    <el-tabs v-model="currentTab" class="center-tabs">
+    <el-tabs v-model="currentTab" @tab-click="handleClick" class="center-tabs">
       <el-tab-pane label="组件属性" name="field" />
       <el-tab-pane label="表单属性" name="form" />
     </el-tabs>
@@ -714,7 +714,7 @@ export default {
   props: ['showField', 'activeData', 'formConf'],
   data() {
     return {
-      currentTab: 'field',
+      currentTab: 'form',
       currentNode: null,
       dialogVisible: false,
       iconsVisible: false,
@@ -812,8 +812,10 @@ export default {
   },
   mounted() {
     this.getTableNameList();
-    this.getColumnNameList();
-    
+    this.formConf.formRef = this.tableNames[0]
+    this.getColumnNameList()
+    this.activeData.__vModel__ = this.this.columnNames[0]
+ 
   },
   computed: {
     documentLink() {
@@ -868,6 +870,11 @@ export default {
     },
   },
   methods: {
+    handleClick(tab, event) {
+      if (tab.name == 'field') {
+        this.getColumnNameList()
+      }
+    },
     addReg() {
       this.activeData.__config__.regList.push({
         pattern: '',

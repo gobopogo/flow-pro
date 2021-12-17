@@ -88,6 +88,7 @@
     </div>
 
     <right-panel
+      ref="panel" 
       :active-data="activeData"
       :form-conf="formConf"
       :show-field="!!drawingList.length"
@@ -336,6 +337,8 @@ export default {
     activeFormItem(currentItem) {
       this.activeData = currentItem
       this.activeId = currentItem.__config__.formId
+      this.$refs.panel.currentTab = 'field'
+      this.$refs.panel.getColumnNameList()
     },
     onEnd(obj) {
       if (obj.from !== obj.to) {

@@ -215,7 +215,8 @@ export default {
       }
       this.lcModa.disabled = true
       this.lcModa.title = '查看流程业务信息：' + r.processName
-      this.lcModa.formComponent = () => import(`@/${this.getFormComponentByName(r.routeName, r.businessTable).component}`);
+      this.lcModa.formComponent = () => import(`@/${this.getFormComponentByName(r.routeName, r.tableName).component}`);
+      r.businessTable = r.tableName
       this.lcModa.processData = r
       this.lcModa.isNew = false
       this.lcModa.isTask = false
