@@ -365,7 +365,7 @@ export const constantRouterMap = [
   },
   {
     path: '/approver/:token',
-    component: () => import("@/views/flowable/admin/approver")
+    component: () => import("@/views/activiti/approver/approver")
   },
   {
     path: '/404',
