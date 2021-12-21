@@ -1,7 +1,7 @@
 <template>
   <div>
     <parser
-      v-if="formConf.fields.length > 0 && formEditData !== undefined"
+      v-if="parserShow"
       v-loading="loading"
       :is-edit="!isNew"
       :form-conf="formConf"
@@ -78,6 +78,17 @@ export default {
     }
     console.log(this.disabled);
     console.log(this.btndisabled);
+  },
+  computed: {
+    parserShow(){
+      if(this.formConf.fields.length <= 0){
+        return false
+      }
+      if (!this.isNew && this.formEditData == undefined) {
+        return false
+      }
+      return true
+    },
   },
   methods: {
     handlerGetFormConfig() {

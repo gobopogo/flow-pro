@@ -101,7 +101,7 @@ public class ActivitiModelController {
      * @return 按条件或者全部模型
      */
     @AutoLog(value = "获取模型列表")
-    @ApiOperation(value = "模型列表", notes = "keyWord不空则匹配模型名称，否则查询全部。查询ACT_RE_MODE")
+    @ApiOperation(value = "模型列表", notes = "keyWord不空则匹配模型名称，否则查询全部。查询ACT_RE_MODEL")
     @RequestMapping(value = "/modelListData", method = RequestMethod.GET)
     @ResponseBody
     public Result<Object> modelListData(HttpServletRequest request) {

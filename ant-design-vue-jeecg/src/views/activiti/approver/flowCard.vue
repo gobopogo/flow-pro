@@ -30,34 +30,34 @@
         </tr>
       </table>
       <div class="app-btn">
-        <el-button size="mini" icon="el-icon-edit" round @click="updatelc(item.id)">设计</el-button>
-        <el-button size="mini" icon="el-icon-view" round style="margin-left: 10px" @click.stop="deployment(item)">发布</el-button>
-        <a-popconfirm
+        <el-button size="mini" icon="el-icon-edit" round @click="basicSettingShow = true">基础</el-button>
+        <el-button size="mini" icon="el-icon-c-scale-to-original" round @click="updatelc(item.id)">流程</el-button>
+        <el-button size="mini" icon="el-icon-view" round style="margin-left: 10px" @click.stop="deployment(item)">表单</el-button>
+        <!-- <a-popconfirm
           title="是否确认删除?"
           @confirm="deletelc(1,item)"
           @cancel="deletelc(0)"
           okText="Yes"
           cancelText="No"
         >
-          <!-- <a href="javascript:void(0);">删除</a> -->
           <el-button size="mini" icon="el-icon-view" round style="margin-left: 10px">删除</el-button>
-        </a-popconfirm>
+        </a-popconfirm> -->
       </div>
     </div>
-    <app-upload-dialog
-        ref="appUploadDialog"
-        @upload="$refs.upload.submit()"
-        @appInfo="onAppInfo"/>
-
     <a-modal
-      title="设计模型"
+      title="基础设置"
       :visible="updateObj.visible"
       :footer="null" :maskClosable="false"
       width="90%"
       @cancel="cancelUpdate"
       style="top: 20px;"
     >
-      <iframe :src="iframUrl" frameborder="0" width="100%" height="800px" scrolling="auto" style="background-color: #fff;"></iframe>
+      <BasicSetting
+        ref="basicSetting" 
+        :conf=null
+        v-show="true" 
+        tabName="basicSetting" 
+      />
     </a-modal>
     <!--查看图片-->
     <el-dialog 
@@ -75,10 +75,13 @@
 <script>
   import Vue from 'vue'
   import { ACCESS_TOKEN } from '@/store/mutation-types'
-  import AppUploadDialog from "@/views/publish/appList/AppUploadDialog";
   import { getAction } from '@/api/manage'
+  import BasicSetting from '@/components/BasicSetting'
+  import Flowable from "@/components/Flowable";
+  import DynamicForm from "@/components/FormGenerator/index/Home";
+
   export default {
-    components: {AppUploadDialog},
+    components: {BasicSetting, DynamicForm, Flowable},
     data() {
       return {
         //模型流程图
@@ -86,6 +89,7 @@
         viewTitle:"",
         diagramUrl:"",
         contentLoading: true,
+        
         /*流程设计器连接*/
         iframUrl:"",
         /*新增流程框参数*/
@@ -98,6 +102,7 @@
           visible: false,
           confirmLoading: false,
         },
+        basicSettingShow: false,
 
         appList: [],
         url: {
@@ -106,12 +111,6 @@
           deployment: "/activiti/models/deployment/",
           create: "/activiti/models/create",
           update: "/activiti/modeler.html?modelId=",
-          // upload: "/activiti/models/uploadFile/",
-          upload: "http://localhost:8080/jeecg-boot/activiti/models/uploadFile",
-        },
-        uploadAppInfo: null,
-        auth: {
-          authorization: "",
         },
       };
     },
@@ -129,38 +128,6 @@
           }
         }).finally(()=>this.contentLoading = false);
       },
-      uploadChange(file) {
-        if (file.status === "ready") {
-          this.$refs.appUploadDialog.open(file);
-        }
-      },
-      uploadError() {
-        this.$refs.appUploadDialog.close();
-        this.$message.error("上传失败，请重试");
-      },
-      uploadProgress(event) {
-        this.$refs.appUploadDialog.onProgress(event);
-      },
-      uploadSuccess() {
-        this.$refs.appUploadDialog.close();
-        this.$message.success("上传成功");
-        this.getAppList();
-      },
-      onAppInfo(appInfo) {
-        this.uploadAppInfo = appInfo;
-      },
-      toVersion(id) {
-        this.$router.push({
-          path: "/publish/appDetail/AppVersions/" + id
-        });
-      },
-      gotoPreview(item) {
-        window.open(document.location.protocol + "//" + window.location.host + "/preview/" + item.shortCode, "_blank");
-      },
-      getUrl(item) {
-        return window.location.protocol + "//" + window.location.host + "/preview/" + item.shortCode;
-      },
-
       exportdiagram(record) {
         this.viewTitle = "流程图片预览(" + record.name + ")";
         this.diagramUrl = 'http://localhost:8080/jeecg-boot/activiti/models/activiti/exportDiagram' + '?modelId=' + record.id;
