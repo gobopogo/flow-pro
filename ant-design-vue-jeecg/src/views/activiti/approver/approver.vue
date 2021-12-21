@@ -156,6 +156,7 @@ export default {
         getCmpData('processDesign')
         this.activeStep = 'processDesign'
       }
+      // window.close();
 
     },
     sendToServer(param){

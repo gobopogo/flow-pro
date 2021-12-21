@@ -83,7 +83,6 @@ export const JeecgListMixin = {
       }
 
       if(!this.disableMixinCreated){
-        console.log(' -- mixin created -- ')
         this.loadData();
         //初始化字典配置 在自己页面定义
         this.initDictConfig();
@@ -148,7 +147,6 @@ export const JeecgListMixin = {
       })
     },
     initDictConfig(){
-      console.log("--这是一个假的方法!")
     },
     handleSuperQuery(params, matchType) {
       //高级查询方法

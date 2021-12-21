@@ -99,7 +99,7 @@ export default {
                 this.$message.warning(res.message);
               }
             }).finally(() => {
-
+              window.close();
             })
 
           }else {

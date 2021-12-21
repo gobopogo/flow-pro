@@ -1,9 +1,9 @@
 <template>
   <div>
     <parser
-      v-if="parserShow"
+      v-if="showParser"
       v-loading="loading"
-      :is-edit="!isNew"
+      :is-edit="this.isNew == false"
       :form-conf="formConf"
       :form-edit-data="formEditData"
       :disabled="disabled"
@@ -46,7 +46,7 @@ export default {
     /*是否新增*/
     isNew: {
       type: Boolean,
-      default: false,
+      default: undefined,
       required: false
     },
     /*是否处理流程*/
@@ -71,24 +71,24 @@ export default {
       btndisabled: false,
     }
   },
+  computed: {
+    showParser() {
+      if (this.formConf.fields.length > 0) {
+        if (this.isNew == undefined || this.isNew == true) {
+          return true
+        }
+        if (this.isNew == false && this.formEditData !== undefined) {
+          return true
+        }
+      }
+      return false
+    }
+  },
   mounted() {
     this.handlerGetFormConfig(this.formId)
-    if (!this.isNew) {
+    if (this.isNew == false) {
       this.handlerGetFormData()
     }
-    console.log(this.disabled);
-    console.log(this.btndisabled);
-  },
-  computed: {
-    parserShow(){
-      if(this.formConf.fields.length <= 0){
-        return false
-      }
-      if (!this.isNew && this.formEditData == undefined) {
-        return false
-      }
-      return true
-    },
   },
   methods: {
     handlerGetFormConfig() {
@@ -114,8 +114,9 @@ export default {
       formData.procDeTitle = this.processData.name;
       if (!formData.tableName) formData.tableName = this.processData.businessTable;
       var url = this.url.addApply;
-      if (!this.isNew) {
+      if (this.isNew == false) {
         url = this.url.editForm;
+        formData.id = this.processData.tableId
       }
       this.btndisabled = true;
       this.postFormAction(url, formData).then((res) => {
@@ -149,7 +150,7 @@ export default {
           let formDataInit = res.result;
           formDataInit.tableName = r.tableName;
           this.formEditData = Object.assign({}, formDataInit)
-          this.btndisabled = false;
+          // this.btndisabled = false;
         }
         else {
           this.$message.error(res.message)

@@ -399,7 +399,6 @@
               lcTypes.push({text:dict.text,value:dict.value})
             }
             this.lcTypeF = lcTypes;
-            console.log(lcTypes)
           }
         });
       },
@@ -454,7 +453,6 @@
         }
         this.spry.departmentManageIds = departmentManageIds.join(",")
         if (departmentManageIds.length>0) this.spryTypes.push('5') ;
-        console.log("回显this.spry",this.spry)
 
         this.spry.formVariables = node.formVariables||'';
         if (this.spry.formVariables) this.spryTypes.push('6');
